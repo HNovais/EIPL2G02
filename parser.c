@@ -30,6 +30,50 @@ void parse (char *line) {
             long Y = POP();
             long X = POP();
             PUSH(X + Y);
+        } else 	if (strcmp (token, "-") == 0) {
+            long Y = POP();
+            long X = POP();
+            PUSH(X - Y);
+        } else 	if (strcmp (token, "*") == 0) {
+            long Y = POP();
+            long X = POP();
+            PUSH(X * Y);
+        } else 	if (strcmp (token, "/") == 0) {
+            long Y = POP();
+            long X = POP();
+            PUSH(X / Y);
+        } else 	if (strcmp (token, "(") == 0) {
+            long X = POP();
+            PUSH(X-1);
+        } else 	if (strcmp (token, ")") == 0) {
+            long X = POP();
+            PUSH(X+1);
+        } else 	if (strcmp (token, "%") == 0) {
+            long Y = POP();
+            long X = POP();
+            PUSH(X % Y);
+        } else 	if (strcmp (token, "#") == 0) {
+            long Y = POP();
+            long X = POP();
+            PUSH(pow(X,Y));
+        } else 	if (strcmp (token, "&") == 0) {
+            long Y = POP();
+            long X = POP();
+            PUSH(X & Y);
+        } else 	if (strcmp (token, "|") == 0) {
+            long Y = POP();
+            long X = POP();
+            PUSH(X | Y);
+        } else 	if (strcmp (token, "^") == 0) {
+            long Y = POP();
+            long X = POP();
+            PUSH(X ^ Y);
+        } else 	if (strcmp (token, "~") == 0) {
+            long X = POP();
+            PUSH(~X);
         }
     }
+
+    PRINT_STACK(count);
+
 }
