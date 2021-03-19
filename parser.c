@@ -77,3 +77,37 @@ void parse (char *line) {
     PRINT_STACK(count);
 
 }
+
+/**
+ * \brief Esta é a função auxiliar da parse que imprime a stack
+ *
+ * @param x : É o parametro que indica o tamanho da stack que será imprimida
+ */
+void PRINT_STACK(int x) {
+    int i;
+    for (i = 0; i<x; i++) {
+        printf("%ld", stack[i]);
+    }
+    putchar('\n');
+}
+
+/**
+ * \brief Esta é a função auxiliar que retira o último elemento da stack
+ *
+ * @returns O último elemento da stack
+ */
+long POP() {
+    int res = stack[count -1];
+    count--;
+    return res;
+}
+
+/**
+ * \brief Esta é a função auxiliar que põe um elemento na stack
+ *
+ * @param i : É o elemento que queremos colocar na stack
+ */
+void PUSH(long i) {
+    stack[count] = i;
+    count++;
+}
