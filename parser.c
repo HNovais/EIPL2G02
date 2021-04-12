@@ -364,3 +364,67 @@ void PUSH(DADOS P)
     stack[count] = P;
     count++;
 }
+
+/**
+ * \brief Esta é a função auxiliar que converte um long em dados
+ *
+ * @param x : É o elemento a ser convertido
+ */
+DADOS longTOdados (long x) {
+    DADOS P;
+    P.tipo = 0;
+    P.vl = x;
+
+    return P;
+}
+
+/**
+ * \brief Esta é a função auxiliar que converte um double em dados
+ *
+ * @param x : É o elemento a ser convertido
+ */
+DADOS doubleTOdados (double x) {
+    DADOS P;
+    P.tipo = 1;
+    P.vd = x;
+
+    return P;
+}
+
+/**
+ * \brief Esta é a função auxiliar que converte um char em dados
+ *
+ * @param x : É o elemento a ser convertido
+ */
+DADOS charTOdados (char x) {
+    DADOS P;
+    P.tipo = 2;
+    P.vc = x;
+
+    return P;
+}
+
+/**
+ * \brief Esta é a função auxiliar que converte um elemento do tipo dados em long
+ *
+ * @param P : É o elemento a ser convertido
+ */
+long dadosTOlong (DADOS P) {
+    long x;
+    x = P.vl;
+
+    return x;
+}
+
+/**
+ * \brief Esta é a função auxiliar que converte um elemento do tipo dados em double
+ *
+ * @param P : É o elemento a ser convertido
+ */
+double dadosTOdouble (DADOS P) {
+    double x;
+    x = P.vd;
+
+    return x;
+}
+
