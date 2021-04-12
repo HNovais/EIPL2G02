@@ -123,4 +123,127 @@ void parse (char *line) {
                 else {Xd = POPD();Xl = 0;}
                 if (x == 0 && y == 0) PUSHL(pow(Xl, Yl));
                 else PUSHD(pow((Xl + Xd), (Yl + Yd)));
+            }else if (strcmp(token, "&") == 0)
+            {
+                x = stack[count - 1].tipo;
+                if (x == 0) { Yl = POPL();}
+                y = stack[count - 1].tipo;
+                if (y == 0) { Xl = POPL();}
+                if (x == 0 && y == 0) PUSHL(Xl & Yl);
             }
+            else if (strcmp(token, "|") == 0)
+            {
+                x = stack[count - 1].tipo;
+                if (x == 0) { Yl = POPL();}
+                y = stack[count - 1].tipo;
+                if (y == 0) { Xl = POPL();}
+                if (x == 0 && y == 0) PUSHL(Xl | Yl);
+            }
+            else if (strcmp(token, "^") == 0)
+            {
+                x = stack[count - 1].tipo;
+                if (x == 0) { Yl = POPL();}
+                y = stack[count - 1].tipo;
+                if (y == 0) { Xl = POPL();}
+                if (x == 0 && y == 0) PUSHL(Xl ^ Yl);
+            }
+            else if (strcmp(token, "~") == 0)
+            {
+                x = stack[count - 1].tipo;
+                if (x == 0) {Yl = POPL();PUSHL(~Yl);}
+            }
+            else if (strcmp(token, "_") == 0)
+            {
+                DADOS P = POP();
+                PUSH(P);
+                PUSH(P);
+            }
+            else if (strcmp(token, ";") == 0)
+            {
+                POP();
+            }
+            else if (strcmp(token, "\\") == 0)
+            {
+                DADOS P = POP();
+                DADOS Z = POP();
+                PUSH(P);
+                PUSH(Z);
+            }
+            else if (strcmp(token, "@") == 0)
+            {
+                DADOS P = POP();
+                DADOS Z = POP();
+                DADOS T = POP();
+                PUSH(Z);
+                PUSH(P);
+                PUSH(T);
+            }
+            else if (strcmp(token, "$") == 0)
+            {
+                long n = POPL();
+                PUSH(stack[count - n - 1]);
+            }
+            else if (strcmp(token, "i") == 0)
+            {
+                x = stack[count - 1].tipo;
+                if (x == 1) {Yd = POPD();PUSHL(Yd);}
+                else if (x == 2) {Xc = POPC(); PUSHL(Xc);}
+                else if (x==3) {Xs = POPS(); PUSHL(atol(Xs));}
+            }
+            else if (strcmp(token, "f") == 0)
+            {
+                x = stack[count - 1].tipo;
+                if (x == 0) {Yl = POPL(); PUSHD(Yl);}
+                else if (x==3) {Xs = POPS(); PUSHD(atof(Xs));}
+            }
+            else if (strcmp(token, "c") == 0)
+            {
+                x = stack[count - 1].tipo;
+                if (x == 0) {Yl = POPL(); PUSHC(Yl);}
+                else if (x==3) {Xs = POPS(); PUSHC(atol(Xs));}
+            }
+            else if (strcmp(token, "s") == 0)
+            {
+                //x = stack[count - 1].tipo;
+                //if (x == 0) {Yl = POPL();PUSHS(ltoa(Yl, Xs, 10));}
+                //else if (x==1) {Yd = POPD(); PUSHS(snprintf (Xs, count,stack[count], Yd));}
+                //else if (x==2) {Xc = POPC(); PUSHS(Xc);}
+            }
+            else if (strcmp(token, "l") == 0)
+            {
+                char s[10240];
+                assert (fgets(s, 10240, stdin) != NULL);
+                PUSHS(s);
+            }
+        }
+    }
+    PRINT_STACK(count);
+}
+
+/**
+ * \brief Esta é a função auxiliar da PRINT_STACK que imprime um elemento dos diferentes tipos de dados
+ *
+ * @param d : É o elemento a ser imprimido
+ */
+void print_DADOS (DADOS d) {
+    switch (d.tipo)
+    {
+        case 0 : printf("%ld", d.vl); break;
+        case 1 : printf("%g", d.vd); break;
+        case 2 : printf("%c", d.vc); break;
+        case 3 : printf("%s", d.vs); break;
+    }
+}
+
+/**
+ * \brief Esta é a função auxiliar da parse que imprime a stack
+ *
+ * @param x : É o parametro que indica o tamanho da stack que será imprimida
+ */
+void PRINT_STACK(int x) {
+    int i;
+    for (i = 0; i<x; i++) {
+        print_DADOS (stack[i]);
+    }
+    putchar('\n');
+}
