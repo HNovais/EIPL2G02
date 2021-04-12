@@ -247,3 +247,120 @@ void PRINT_STACK(int x) {
     }
     putchar('\n');
 }
+
+/**
+ * \brief Esta é a função auxiliar que retira o último elemento do tipo long da stack
+ *
+ * @returns O último elemento da stack
+ */
+long POPL() {
+    long x;
+    x = stack[count -1].vl;
+    count--;
+    return x;
+}
+
+/**
+ * \brief Esta é a função auxiliar que retira o último elemento do tipo double da stack
+ *
+ * @returns O último elemento da stack
+ */
+double POPD() {
+    double x;
+    x = stack[count -1].vd;
+    count--;
+    return x;
+}
+
+/**
+ * \brief Esta é a função auxiliar que retira o último elemento do tipo char da stack
+ *
+ * @returns O último elemento da stack
+ */
+char POPC() {
+    char x;
+    x = stack[count -1].vc;
+    count--;
+    return x;
+}
+
+/**
+ * \brief Esta é a função auxiliar que retira o último elemento do tipo string da stack
+ *
+ * @returns O último elemento da stack
+ */
+char *POPS()
+{
+    char *x = stack[count-1].vs;
+    count--;
+    return x;
+}
+
+/**
+ * \brief Esta é a função auxiliar que retira o último elemento da stack
+ *
+ * @returns O último elemento da stack
+ */
+DADOS POP()
+{
+    DADOS P = stack[count-1];
+    count--;
+    return P;
+}
+
+/**
+ * \brief Esta é a função auxiliar que coloca um elemento do tipo long na stack
+ *
+ * @param x : É o elemento que queremos colocar na stack
+ */
+void PUSHL(long x) {
+    stack[count].tipo = 0;
+    stack[count].vl = x;
+    count++;
+}
+
+/**
+ * \brief Esta é a função auxiliar que coloca um elemento do tipo double na stack
+ *
+ * @param x : É o elemento que queremos colocar na stack
+ */
+void PUSHD(double x) {
+    stack[count].tipo = 1;
+    stack[count].vd = x;
+    count++;
+}
+
+/**
+ * \brief Esta é a função auxiliar que coloca um elemento do tipo char na stack
+ *
+ * @param x : É o elemento que queremos colocar na stack
+ */
+void PUSHC(char x)
+{
+    stack[count].tipo = 2;
+    stack[count].vc = x;
+    count++;
+}
+
+/**
+ * \brief Esta é a função auxiliar que coloca um elemento do tipo string na stack
+ *
+ * @param x : É o elemento que queremos colocar na stack
+ */
+void PUSHS(char *x)
+{
+    stack[count].tipo = 3;
+    stack[count].vs = x;
+    count++;
+}
+
+/**
+ * \brief Esta é a função auxiliar que põe um elemento na stack
+ *
+ * @param P : É o elemento que queremos colocar na stack
+ */
+void PUSH(DADOS P)
+{
+    stack[count] = P;
+    count++;
+}
