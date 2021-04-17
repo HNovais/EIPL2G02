@@ -1151,3 +1151,228 @@ STACK *novaStack(){
         else
             PUSHL(stk, 0);
     }
+
+/**
+ * \brief Esta é a função auxiliar que coloca na stack o menor de 2 valores
+ *
+ * @param stk : stack
+ */
+void menorDe2(STACK *stk)
+{
+    int x, y;
+    long Xl, Yl;
+    double Xd, Yd;
+
+    x = stk->comp[stk->count-1].tipo;
+    if (x==0)
+    {
+        Xl=POPL(stk);
+        Xd=0.0;
+    }
+    else
+    {
+        Xd=POPD(stk);
+        Xl=0;
+    }
+
+    y = stk->comp[stk->count-1].tipo;
+    if (y==0)
+    {
+        Yl=POPL(stk);
+        Yd=0.0;
+    }
+    else
+    {
+        Yd=POPD(stk);
+        Yl=0;
+    }
+
+    if ((Yl+Yd) < (Xl+Xd))
+    {
+        if (y==0)
+            PUSHL(stk, Yl);
+        else
+            PUSHD(stk, Yd);
+    }
+    else
+    {
+        if (x==0)
+            PUSHL(stk, Xl);
+        else
+            PUSHD(stk, Xd);
+    }
+}
+
+/**
+ * \brief Esta é a função auxiliar que coloca na stack o maior de 2 valores
+ *
+ * @param stk : stack
+ */
+void maiorDe2(STACK *stk)
+{
+    int x, y;
+    long Xl, Yl;
+    double Xd, Yd;
+
+    x = stk->comp[stk->count-1].tipo;
+    if (x==0)
+    {
+        Xl=POPL(stk);
+        Xd=0.0;
+    }
+    else
+    {
+        Xd=POPD(stk);
+        Xl=0;
+    }
+
+    y = stk->comp[stk->count-1].tipo;
+    if (y==0)
+    {
+        Yl=POPL(stk);
+        Yd=0.0;
+    }
+    else
+    {
+        Yd=POPD(stk);
+        Yl=0;
+    }
+
+    if ((Yl+Yd) > (Xl+Xd))
+    {
+        if (y==0)
+            PUSHL(stk, Yl);
+        else
+            PUSHD(stk, Yd);
+    }
+    else
+    {
+        if (x==0)
+            PUSHL(stk, Xl);
+        else
+            PUSHD(stk, Xd);
+    }
+}
+
+/**
+ * \brief Esta é a função auxiliar que verifica a condição if-then-else de 3 elementos da stack
+ *
+ * @param stk : stack
+ */
+void ifThenElse(STACK *stk)
+{
+    int x, y, z;
+    long Xl, Yl;
+    double Xd, Yd, Z;
+
+    x = stk->comp[stk->count-1].tipo;
+    if (x == 0)
+        Xl=POPL(stk);
+    else
+        Xd=POPD(stk);
+
+    y = stk->comp[stk->count-1].tipo;
+    if (y == 0)
+        Yl=POPL(stk);
+    else
+        Yd=POPD(stk);
+
+    z = stk->comp[stk->count-1].tipo;
+    if (z == 0)
+        Z = POPL(stk);
+    else
+        Z = POPD(stk);
+
+    if (Z != 0)
+    {
+        if (y == 0) PUSHL(stk, Yl);
+        else PUSHD(stk, Yd);
+    }
+    else
+    {
+        if (x == 0) PUSHL(stk, Xl);
+        else PUSHD(stk, Xd);
+    }
+}
+
+/**
+ * \brief Esta é a função auxiliar que testa se a variável é um caracter do alfabeto maiúsculo
+ *
+ * @param t : string com o token
+ *
+ * @returns Verdadeiro ou Falso
+ */
+int variableTeste (char *t)
+{
+    char k;
+    k = t[0];
+    int res;
+
+    if (k <= 90 && k >= 65) res = 0;
+    else res = 1;
+
+    return res;
+}
+
+/**
+ * \brief Esta é a função auxiliar que testa se o primeiro caracter da string é :
+ *
+ * @param t : string com o token
+ *
+ * @returns Verdadeiro ou Falso
+ */
+int twoPointsTeste (char *t)
+{
+    char k;
+    k = t[0];
+    int res;
+
+    if (k == ':') res = 0;
+    else res = 1;
+
+    return res;
+}
+
+/**
+ * \brief Esta é a função auxiliar que coloca na stack a variável pretendida
+ *
+ * @param t : string com o token
+ * @param variaveis : variáveis passíveis de serem colocadas (alfabeto maiúsculo)
+ */
+void variableOut (STACK *stk, char *t, DADOS variaveis[26])
+{
+    char k;
+    k = t[0];
+    DADOS P;
+    int i = k - 65;
+    P = variaveis[i];
+    PUSH(stk, P);
+}
+
+/**
+ * \brief Esta é a função auxiliar que verifica o elemento do topo da stack e o guarda na variável pretendida
+ *
+ * @param t : string com o token
+ * @param variaveis : variáveis passíveis de serem colocadas (alfabeto maiúsculo)
+ */
+void variableIn (STACK *stk, char *t, DADOS variaveis[26])
+{
+    char k;
+    k = t[1];
+    DADOS P = TOP(stk);
+
+    variaveis[k-65] = P;
+}
+
+/**
+ * @brief Esta é a função que verifica o elemento do topo da stack
+ *
+ * @param stk: stack
+ *
+ * @returns O elemento no topo da stack
+ */
+    DADOS TOP(STACK *stk)
+    {
+        DADOS P = stk->comp[stk->count-1];
+        return P;
+    }
