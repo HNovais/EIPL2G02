@@ -765,3 +765,389 @@ STACK *novaStack(){
         PUSH(stk, P);
         PUSH(stk, Z);
     }
+
+    /**
+ * \brief Esta é a função auxiliar que roda os três elementos do topo da stack
+ *
+ * @param stk : stack
+ */
+    void rotateThree(STACK *stk)
+    {
+        DADOS P = POP(stk);
+        DADOS Z = POP(stk);
+        DADOS T = POP(stk);
+        PUSH(stk, Z);
+        PUSH(stk, P);
+        PUSH(stk, T);
+    }
+
+/**
+ * \brief Esta é a função auxiliar que copia o n-ésimo elemento para o topo da stack
+ *
+ * @param stk : stack
+ */
+    void copyN(STACK *stk)
+    {
+        long n = POPL(stk);
+        PUSH(stk, stk->comp[stk->count - n - 1]);
+    }
+
+/**
+ * \brief Esta é a função auxiliar que converte o elemento do topo da stack para um inteiro
+ *
+ * @param stk : stack
+ */
+    void convInteiro(STACK *stk)
+    {
+        int x;
+        double Xd;
+        char Xc, *Xs;
+
+        x = stk->comp[stk->count - 1].tipo;
+        switch (x){
+            case 1:
+                Xd = POPD(stk);
+                PUSHL(stk, Xd);
+                break;
+            case 2:
+                Xc = POPC(stk);
+                PUSHL(stk, Xc);
+                break;
+            case 3:
+                Xs = POPS(stk);
+                PUSHL(stk, atol(Xs));
+                break;
+        }
+    }
+
+/**
+ * \brief Esta é a função auxiliar que converte o elemento do topo da stack para um double
+ *
+ * @param stk : stack
+ */
+    void convDouble(STACK *stk)
+    {
+        int x;
+        long Xl;
+        char *Xs;
+
+        x = stk->comp[stk->count - 1].tipo;
+        switch (x){
+            case 0:
+                Xl = POPL(stk);
+                PUSHD(stk, Xl);
+                break;
+            case 3:
+                Xs = POPS(stk);
+                PUSHD(stk, atof(Xs));
+                break;
+        }
+    }
+
+/**
+ * \brief Esta é a função auxiliar que converte o elemento do topo da stack para um caracter
+ *
+ * @param stk : stack
+ */
+    void convCaracter(STACK *stk)
+    {
+        int x;
+        long Xl;
+        char *Xs;
+
+        x = stk->comp[stk->count - 1].tipo;
+        switch (x){
+            case 0:
+                Xl = POPL(stk);
+                PUSHC(stk, Xl);
+                break;
+            case 3:
+                Xs = POPS(stk);
+                PUSHC(stk, atof(Xs));
+                break;
+        }
+    }
+
+/**
+ * \brief Esta é a função auxiliar que converte o elemento do topo da stack para uma string
+ */
+    void convString()
+    {
+        /*
+        int x;
+        long Xl;
+        double Xd;
+        char Xc, *Xs;
+        x = stack[count - 1].tipo;
+        if (x == 0) {Xl = POPL();PUSHS(ltoa(Xl, Xs, 10));}
+        else if (x==1) {Xd = POPD(); PUSHS(snprintf (Xs, count,stack[count], Xd));}
+        else if (x==2) {Xc = POPC(); PUSHS(Xc);}
+         */
+    }
+
+/**
+ * \brief Esta é a função auxiliar que lê o conteúdo da próxima linha
+ *
+ * @param stk : stack
+ */
+    void lerLinha(STACK *stk)
+    {
+        char s[10240];
+        assert (fgets(s, 10240, stdin) != NULL);
+        PUSHS(stk, s);
+    }
+
+/**
+ * \brief Esta é a função auxiliar que compara os elementos no topo da stack
+ *
+ * @param stk : stack
+ */
+    void igual(STACK *stk)
+    {
+        int x, y;
+        long Xl, Yl;
+        double Xd, Yd;
+
+        x = stk->comp[stk->count-1].tipo;
+        if (x == 0)
+        {
+            Xl = POPL(stk);
+            Xd = 0.0;
+        }
+        else
+        {
+            Xd = POPD(stk);
+            Xl = 0;
+        }
+
+        y = stk->comp[stk->count-1].tipo;
+        if (y == 0)
+        {
+            Yl = POPL(stk);
+            Yd = 0.0;
+        }
+        else
+        {
+            Yd = POPD(stk);
+            Yl = 0;
+        }
+
+        if ((Xl+Xd) == (Yl+Yd))
+            PUSHL(stk, 1);
+        else
+            PUSHL(stk, 0);
+    }
+
+/**
+ * \brief Esta é a função auxiliar que verifica se o penúltimo elemento da stack é menor que o último
+ *
+ * @param stk : stack
+ */
+    void menor(STACK *stk)
+    {
+        int x, y;
+        long Xl, Yl;
+        double Xd, Yd;
+
+        x = stk->comp[stk->count-1].tipo;
+        if (x == 0)
+        {
+            Xl = POPL(stk);
+            Xd = 0.0;
+        }
+        else
+        {
+            Xd = POPD(stk);
+            Xl = 0;
+        }
+
+        y = stk->comp[stk->count-1].tipo;
+        if (y == 0)
+        {
+            Yl = POPL(stk);
+            Yd = 0.0;
+        }
+        else
+        {
+            Yd = POPD(stk);
+            Yl = 0;
+        }
+
+        if ((Yl+Yd) < (Xl+Xd))
+            PUSHL(stk, 1);
+        else
+            PUSHL(stk, 0);
+    }
+
+/**
+ * \brief Esta é a função auxiliar que verifica se o penúltimo elemento da stack é maior que o último
+ *
+ * @param stk : stack
+ */
+    void maior(STACK *stk)
+    {
+        int x, y;
+        long Xl, Yl;
+        double Xd, Yd;
+
+        x = stk->comp[stk->count-1].tipo;
+        if (x == 0)
+        {
+            Xl = POPL(stk);
+            Xd = 0.0;
+        }
+        else
+        {
+            Xd = POPD(stk);
+            Xl = 0;
+        }
+
+        y = stk->comp[stk->count-1].tipo;
+        if (y == 0)
+        {
+            Yl = POPL(stk);
+            Yd = 0.0;
+        }
+        else
+        {
+            Yd = POPD(stk);
+            Yl = 0;
+        }
+
+        if ((Yl+Yd) > (Xl+Xd))
+            PUSHL(stk, 1);
+        else
+            PUSHL(stk, 0);
+    }
+
+/**
+ * \brief Esta é a função auxiliar que coloca na stack o contrário do seu valor lógico
+ *
+ * @param stk : stack
+ */
+    void nao(STACK *stk)
+    {
+        int x;
+        long Xl;
+        double Xd;
+        char Xc;
+
+        x = stk->comp[stk->count-1].tipo;
+        switch (x) {
+            case 0:
+                Xl = POPL(stk);
+                if (Xl != 0)
+                    PUSHL(stk, 0);
+                else
+                    PUSHL(stk, 1);
+                break;
+            case 1:
+                Xd = POPD(stk);
+                if (Xd != 0)
+                    PUSHL(stk, 0);
+                else
+                    PUSHL(stk, 1);
+                break;
+            case 2:
+                Xc = POPC(stk);
+                if (Xc != 0)
+                    PUSHL(stk, 0);
+                else
+                    PUSHL(stk, 1);
+                break;
+        }
+    }
+
+/**
+ * \brief Esta é a função auxiliar que verifica a relação lógica conjuntiva entre dois elementos da stack
+ *
+ * @param stk : stack
+ */
+    void conjuncao(STACK *stk)
+    {
+        int x, y;
+        long Xl, Yl;
+        double Xd, Yd;
+
+        x = stk->comp[stk->count-1].tipo;
+        if (x==0)
+        {
+            Xl=POPL(stk);
+            Xd=0.0;
+        }
+        else
+        {
+            Xd=POPD(stk);
+            Xl=0;
+        }
+
+        y = stk->comp[stk->count-1].tipo;
+        if (y==0)
+        {
+            Yl=POPL(stk);
+            Yd=0.0;
+        }
+        else
+        {
+            Yd=POPD(stk);
+            Yl=0;
+        }
+
+        if ((Xl+Xd)*(Yl+Yd) != 0)
+        {
+            if (x==0) PUSHL(stk, Xl);
+            else PUSHD(stk, Xd);
+        }
+        else
+            PUSHL(stk, 0);
+    }
+
+/**
+ * \brief Esta é a função auxiliar que verifica a relação lógica disjuntiva entre dois elementos da stack
+ *
+ * @param stk : stack
+ */
+    void disjuncao(STACK *stk)
+    {
+        int x, y;
+        long Xl, Yl;
+        double Xd, Yd;
+
+        x = stk->comp[stk->count-1].tipo;
+        if (x==0)
+        {
+            Xl=POPL(stk);
+            Xd=0.0;
+        }
+        else
+        {
+            Xd=POPD(stk);
+            Xl=0;
+        }
+
+        y = stk->comp[stk->count-1].tipo;
+        if (y==0)
+        {
+            Yl=POPL(stk);
+            Yd=0.0;
+        }
+        else
+        {
+            Yd=POPD(stk);
+            Yl=0;
+        }
+        if ((Yl+Yd) != 0)
+        {
+            if (y==0) PUSHL(stk, Yl);
+            else PUSHD(stk, Yd);
+        }
+        else if ((Xl+Xd) != 0 && (Yl+Yd) == 0)
+        {
+            if(x==0)
+                PUSHL(stk, Xl);
+            else
+                PUSHD(stk, Xd);
+        }
+        else
+            PUSHL(stk, 0);
+    }
