@@ -361,3 +361,407 @@ STACK *novaStack(){
 
         return x;
     }
+
+/**
+ * \brief Esta é a função auxiliar que permite a soma de dois elementos da stack
+ *
+ * @param stk : stack
+ */
+    void soma (STACK *stk)
+    {
+        int x, y;
+        long Yl, Xl;
+        double Yd, Xd;
+
+        x = stk->comp[stk->count - 1].tipo;
+        if (x == 0)
+        {
+            Yl = POPL(stk);
+            Yd = 0.0;
+        }
+        else
+        {
+            Yd = POPD(stk);
+            Yl = 0;
+        }
+
+        y = stk->comp[stk->count - 1].tipo;
+        if (y == 0)
+        {
+            Xl = POPL(stk);
+            Xd = 0.0;
+        }
+        else
+        {
+            Xd = POPD(stk);
+            Xl = 0;
+        }
+
+        if (x == 0 && y == 0)
+            PUSHL(stk, Xl + Yl);
+        else
+            PUSHD(stk, Xl + Xd + Yl + Yd);
+    }
+
+/**
+ * \brief Esta é a função auxiliar que permite a subtração de dois elementos da stack
+ *
+ * @param stk : stack
+ */
+    void subtracao(STACK *stk)
+    {
+        int x, y;
+        long Yl, Xl;
+        double Yd, Xd;
+
+        x = stk->comp[stk->count - 1].tipo;
+        if (x == 0)
+        {
+            Yl = POPL(stk);
+            Yd = 0.0;
+        }
+        else
+        {
+            Yd = POPD(stk);
+            Yl = 0;
+        }
+
+        y = stk->comp[stk->count - 1].tipo;
+        if (y == 0)
+        {
+            Xl = POPL(stk);
+            Xd = 0.0;
+        }
+        else
+        {
+            Xd = POPD(stk);
+            Xl = 0;
+        }
+
+        if (x == 0 && y == 0)
+            PUSHL(stk, Xl - Yl);
+        else
+            PUSHD(stk, (Xl + Xd) - (Yl + Yd));
+    }
+
+/**
+ * \brief Esta é a função auxiliar que permite a multiplicação de dois elementos da stack
+ *
+ * @param stk : stack
+ */
+    void multiplicacao(STACK *stk)
+    {
+        int x, y;
+        long Yl, Xl;
+        double Xd, Yd;
+
+        x = stk->comp[stk->count - 1].tipo;
+        if (x == 0)
+        {
+            Yl = POPL(stk);
+            Yd = 0.0;
+        }
+        else
+        {
+            Yd = POPD(stk);
+            Yl = 0;
+        }
+
+        y = stk->comp[stk->count - 1].tipo;
+        if (y == 0)
+        {
+            Xl = POPL(stk);
+            Xd = 0.0;
+        }
+        else
+        {
+            Xd = POPD(stk);
+            Xl = 0;
+        }
+
+        if (x == 0 && y == 0)
+            PUSHL(stk, Xl * Yl);
+        else
+            PUSHD(stk, (Xl + Xd) * (Yl + Yd));
+    }
+
+/**
+ * \brief Esta é a função auxiliar que permite a divisão de dois elementos da stack
+ *
+ * @param stk : stack
+ */
+    void divisao(STACK *stk)
+    {
+        int x, y;
+        long Yl, Xl;
+        double Xd, Yd;
+
+        x = stk->comp[stk->count - 1].tipo;
+        if (x == 0)
+        {
+            Yl = POPL(stk);
+            Yd = 0.0;
+        }
+        else
+        {
+            Yd = POPD(stk);
+            Yl = 0;
+        }
+
+        y = stk->comp[stk->count - 1].tipo;
+        if (y == 0)
+        {
+            Xl = POPL(stk);
+            Xd = 0.0;
+        }
+        else
+        {
+            Xd = POPD(stk);
+            Xl = 0;
+        }
+
+        if (x == 0 && y == 0)
+            PUSHL(stk, Xl / Yl);
+        else
+            PUSHD(stk, (Xl + Xd) / (Yl + Yd));
+    }
+
+/**
+ * \brief Esta é a função auxiliar que permite o incremento de um elemento da stack
+ *
+ * @param stk : stack
+ */
+    void incrementar(STACK *stk)
+    {
+        int x;
+        long Xl;
+        double Xd;
+        char Xc;
+
+        x = stk->comp[stk->count - 1].tipo;
+        switch (x){
+            case 0:
+                Xl = POPL(stk);
+                PUSHL(stk, Xl - 1);
+                break;
+            case 1:
+                Xd = POPD(stk);
+                PUSHD(stk, Xd - 1);
+                break;
+            case 2:
+                Xc = POPC(stk);
+                PUSHC(stk, Xc - 1);
+                break;
+        }
+    }
+
+/**
+ * \brief Esta é a função auxiliar que permite o decremento de um elemento da stack
+ *
+ * @param stk : stack
+ */
+    void decrementar(STACK *stk)
+    {
+        int x;
+        long Xl;
+        double Xd;
+        char Xc;
+
+        x = stk->comp[stk->count - 1].tipo;
+        switch (x){
+            case 0:
+                Xl = POPL(stk);
+                PUSHL(stk, Xl + 1);
+                break;
+            case 1:
+                Xd = POPD(stk);
+                PUSHD(stk, Xd + 1);
+                break;
+            case 2:
+                Xc = POPC(stk);
+                PUSHC(stk, Xc + 1);
+                break;
+        }
+    }
+
+/**
+ * \brief Esta é a função auxiliar que permite obter o resto da divisão inteira de dois elementos da stack
+ *
+ * @param stk : stack
+ */
+    void restoDivInt(STACK *stk)
+    {
+        int x, y;
+        long Xl, Yl;
+
+        x = stk->comp[stk->count - 1].tipo;
+        if (x == 0)
+            Xl = POPL(stk);
+
+        y = stk->comp[stk->count - 1].tipo;
+        if (y == 0)
+            Yl = POPL(stk);
+
+        if (x == 0 && y == 0)
+            PUSHL(stk, Yl % Xl);
+    }
+
+/**
+ * \brief Esta é a função auxiliar que faz a exponenciação de dois elementos da stack
+ *
+ * @param stk : stack
+ */
+    void exponenciacao(STACK *stk)
+    {
+        int x, y;
+        long Xl, Yl;
+        double Xd, Yd;
+
+        x = stk->comp[stk->count - 1].tipo;
+        if (x == 0)
+        {
+            Xl = POPL(stk);
+            Xd = 0.0;
+        }
+        else
+        {
+            Xd = POPD(stk);
+            Xl = 0;
+        }
+
+        y = stk->comp[stk->count - 1].tipo;
+        if (y == 0)
+        {
+            Yl = POPL(stk);
+            Yd = 0.0;
+        }
+        else
+        {
+            Yd = POPD(stk);
+            Yl = 0;
+        }
+
+        if (x == 0 && y == 0)
+            PUSHL(stk, pow(Yl, Xl));
+        else
+            PUSHD(stk, pow((Yl + Yd), (Xl + Xd)));
+    }
+
+/**
+ * \brief Esta é a função auxiliar que realiza operações de lógica binária (e(bitwise))
+ *
+ * @param stk : stack
+ */
+    void and(STACK *stk)
+    {
+        int x, y;
+        long Xl, Yl;
+
+        x = stk->comp[stk->count - 1].tipo;
+        if (x == 0)
+            Xl = POPL(stk);
+
+        y = stk->comp[stk->count - 1].tipo;
+        if (y == 0)
+            Yl = POPL(stk);
+
+        if (x == 0 && y == 0)
+            PUSHL(stk, Yl & Xl);
+    }
+
+/**
+ * \brief Esta é a função auxiliar que realiza operações de lógica binária (ou(bitwise))
+ *
+ * @param stk : stack
+ */
+    void or(STACK *stk)
+    {
+        int x, y;
+        long Xl, Yl;
+
+        x = stk->comp[stk->count - 1].tipo;
+        if (x == 0)
+            Xl = POPL(stk);
+
+        y = stk->comp[stk->count - 1].tipo;
+        if (y == 0)
+            Yl = POPL(stk);
+
+        if (x == 0 && y == 0)
+            PUSHL(stk, Yl | Xl);
+    }
+
+/**
+ * \brief Esta é a função auxiliar que realiza operações de lógica binária (xor(bitwise))
+ *
+ * @param stk : stack
+ */
+    void xor(STACK *stk)
+    {
+        int x, y;
+        long Xl, Yl;
+
+        x = stk->comp[stk->count - 1].tipo;
+        if (x == 0)
+            Xl = POPL(stk);
+
+        y = stk->comp[stk->count - 1].tipo;
+        if (y == 0)
+            Yl = POPL(stk);
+
+        if (x == 0 && y == 0)
+            PUSHL(stk, Yl ^ Xl);
+    }
+
+/**
+ * \brief Esta é a função auxiliar que realiza operações de lógica binária (not(bitwise))
+ *
+ * @param stk : stack
+ */
+    void not(STACK *stk)
+    {
+        int x;
+        long Xl;
+
+        x = stk->comp[stk->count - 1].tipo;
+        if (x == 0)
+        {
+            Xl = POPL(stk);
+            PUSHL(stk, ~Xl);
+        }
+    }
+
+/**
+ * \brief Esta é a função auxiliar que duplica o elemento do topo da stack
+ *
+ * @param stk : stack
+ */
+    void duplicar(STACK *stk)
+    {
+        DADOS P = POP(stk);
+        PUSH(stk, P);
+        PUSH(stk, P);
+    }
+
+/**
+ * \brief Esta é a função auxiliar que faz o POP do elemento no topo da stack
+ *
+ * @param stk : stack
+ */
+    void lastOut(STACK *stk)
+    {
+        POP(stk);
+    }
+
+/**
+ * \brief Esta é a função auxiliar que troca os dois elementos do topo da stack
+ *
+ * @param stk : stack
+ */
+    void switchTwo(STACK *stk)
+    {
+        DADOS P = POP(stk);
+        DADOS Z = POP(stk);
+        PUSH(stk, P);
+        PUSH(stk, Z);
+    }
