@@ -13,8 +13,9 @@
  *
  * @returns Stack
  */
-STACK *novaStack(){
-    return malloc(sizeof (STACK));
+STACK *novaStack() {
+    return malloc(sizeof(STACK));
+}
 
 /**
  * \brief Esta é a função que vai fazer o parse de uma linha
@@ -1338,6 +1339,7 @@ int twoPointsTeste (char *t)
  *
  * @param t : string com o token
  * @param variaveis : variáveis passíveis de serem colocadas (alfabeto maiúsculo)
+ * @param stk : stack
  */
 void variableOut (STACK *stk, char *t, DADOS variaveis[26])
 {
@@ -1354,6 +1356,7 @@ void variableOut (STACK *stk, char *t, DADOS variaveis[26])
  *
  * @param t : string com o token
  * @param variaveis : variáveis passíveis de serem colocadas (alfabeto maiúsculo)
+ * @param stk : stack
  */
 void variableIn (STACK *stk, char *t, DADOS variaveis[26])
 {
@@ -1371,8 +1374,8 @@ void variableIn (STACK *stk, char *t, DADOS variaveis[26])
  *
  * @returns O elemento no topo da stack
  */
-    DADOS TOP(STACK *stk)
-    {
-        DADOS P = stk->comp[stk->count-1];
-        return P;
-    }
+DADOS TOP(STACK *stk)
+{
+    DADOS P = stk->comp[stk->count-1];
+    return P;
+}

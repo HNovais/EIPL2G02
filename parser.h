@@ -77,3 +77,5 @@ int variableTeste (char *t);
 int twoPointsTeste (char *t);
 void variableOut (STACK *stk, char *t, DADOS variaveis[26]);
 void variableIn (STACK *stk, char *t, DADOS variaveis[26]);
+DADOS TOP();
+
