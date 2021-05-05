@@ -14,13 +14,27 @@
  * 
  * @returns O valor 0
  */
-int main () {
+int main()
+{
+    char line[10240];
+    assert (fgets(line, 10240, stdin) != NULL);
+    assert (line[strlen(line) -1] == '\n');
 
-	char line[10240];
+    int flagMain = 0;
 
-	assert( fgets(line, 10240, stdin) != NULL);
-	assert( line [strlen(line) - 1] == '\n');   // Se conseguir encontrar o \n no final quer dizer que leu a linha toda
+    for (unsigned int i=0; i < strlen(line)-1; i++)
+    {
+        if (flagMain == 1)
+        {
+            if (line[i] == ' ') line[i] = '.';
+            if (line[i] == '"') flagMain = 0 ;
+        }
+        else
+        {
+            if (line[i] == '"') flagMain = 1 ;
+        }
+    }
 
-    parse(line);
-	return 0;
+    parser(line);
+    return 0;
 }
