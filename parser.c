@@ -29,45 +29,40 @@ void parser(char *line)
     int flag = 0;
     int bloco = 0;
     char *delims = " \t\n";
+    char *sobra;
 
     DADOS variaveis [26];
     atribuicao(variaveis);
 
     STACK *stack = novaStack();
     iniciarStack(stack);
-    STACK *endBloco = novaStack();
-    STACK *chose;
+    STACK *addressBloco = novaStack();
+    STACK *choose;
 
-    STACK *arrayList[100];
-    arrayList[0] = stack;
+    STACK *stackPointer[100];
+    stackPointer[0] = stack;
+
+
 
     for (char *token = strtok(line, delims); token != NULL; token = strtok(NULL, delims))
     {
-        char *sobra;
+        if (bloco == 1) choose = addressBloco;
+        else choose = stackPointer[flag];
+
         long val_i = strtol(token, &sobra, 10);
-
-        if(bloco == 1) chose = endBloco;
-        else chose = arrayList[flag];
-
-        if (strlen(sobra) == 0)
-        {
-            PUSHL(chose, val_i);
-        }
+        if (strlen(sobra) == 0) PUSHL(choose, val_i);
         else
         {
             double val_d = strtod(token, &sobra);
-            if (strlen(sobra) == 0)
-            {
-                PUSHD(chose, val_d);
-            }
+            if (strlen(sobra) == 0) PUSHD(choose, val_d);
             else
             {
-                ((chose->comp[chose->count-1].tipo == BLOCO)&&(strstr("+-*/()%#&|^~e&e|_;\\@$clifts<>=!?e<e>,", token)  != NULL)) ? parserBloco(token, arrayList, &flag, &bloco, endBloco):
-                (strstr("[]{}", token)                                    != NULL) ? parserArray(token, arrayList, &flag, &bloco, endBloco):
-                (strstr("+-*/()%#&|^~e&e|_;\\@$clifts<>=!?e<e>,", token)  != NULL) ? decideOperations(token, arrayList, &flag, &bloco, endBloco):
-                (strchr(token,34)                                        != NULL)  ? criarString(token, arrayList, &flag):
-                (variableTeste(token)                                    ==0)      ? variableOut(arrayList, token, variaveis, &flag):
-                (twoPointsTeste(token)                                   ==0)      ? variableIn (arrayList, token, variaveis, &flag):
+                (strstr("[]{}", token)                                                   != NULL)  ? parserAux        (token, stackPointer, &flag, &bloco, addressBloco):
+                ((choose->comp[choose->count-1].tipo == BLOCO)&&(strstr("~%,$|", token)  != NULL)) ? blocoOperations  (token, stackPointer, &flag, &bloco, addressBloco):
+                (strstr("+-*/()%#&|^~e&e|_;\\@$clifts<>=!?e<e>,", token)                 != NULL)  ? decideOperations (token, stackPointer, &flag, &bloco, addressBloco):
+                (strchr(token,34)                                                             != NULL)  ? criarString      (token, stackPointer, &flag):
+                (variableTeste(token)                                                            ==0)      ? variableOut      (stackPointer, token, variaveis, &flag):
+                (twoPointsTeste(token)                                                           ==0)      ? variableIn       (stackPointer, token, variaveis, &flag):
                 exit(0);
             }
         }
@@ -77,88 +72,163 @@ void parser(char *line)
     putchar('\n');
 }
 
-//falta documentar
-void parserArray(char *t, STACK *arrayList[], int *flag, int *bloco, STACK *endBloco)
+/**
+ * \brief Esta é a função auxiliar do parser que permite criar os arrays e os blocos
+ *
+ * @param token : sinal ou símbolo respetivo a cada operação
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ * @param bloco : indicador de que possuímos um bloco (abertura de {)
+ * @param addressBloco : stack onde vai ser guardado o bloco
+ */
+void parserAux(char *token, STACK *stackPointer[], int *flag, int *bloco, STACK *addressBloco)
 {
-    if (strstr("[",t) != NULL) criarArray(arrayList, flag);
-    if (strstr("]",t) != NULL) (*flag)--;
-    if (strstr("{",t) != NULL) {criarBloco(arrayList, flag, endBloco); (*bloco) = 1;}
-    if (strstr("}",t) != NULL) {(*bloco) = 0;}
+    if (strstr("[",token) != NULL) criarArray(stackPointer, flag);
+    if (strstr("]",token) != NULL) (*flag)--;
+    if (strstr("{",token) != NULL) {criarBloco(stackPointer, flag, addressBloco); (*bloco) = 1;}
+    if (strstr("}",token) != NULL) {(*bloco) = 0;}
 }
 
-
-void parserBloco(char *t, STACK *arrayList[], int *flag, int *bloco, STACK *endBloco)
+/**
+ * \brief Esta é a função auxiliar que cria um Array quando introduzido o símbolo [
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
+void criarArray(STACK *stackPointer[],  int *flag)
 {
-    if (strstr("~",t) != NULL) executaBloco(arrayList, flag, bloco, endBloco);
-    //if (strstr("%",t) != NULL) aplicaBloco(arrayList, flag, endBloco);
+    STACK *array = novaStack();
+    iniciarStack(array);
+    PUSHA(stackPointer[*flag], array);
+    (*flag)++;
+    stackPointer[*flag] = array;
+}
+
+/**
+ * \brief Esta é a função auxiliar que inicializa uma stack
+ *
+ * @param stack : stack
+ */
+void iniciarStack(STACK *stack)
+{
+    stack->count = 0;
+    stack->size  = 5;
+    stack->comp = malloc (stack->size * sizeof(DADOS));
+}
+
+/**
+ * \brief Esta é a função auxiliar que cria um Bloco quando introduzido o símbolo {
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
+void criarBloco(STACK *stackPointer[], int *flag, STACK *addressBloco)
+{
+    iniciarStack(addressBloco);
+    PUSHB(stackPointer[*flag], addressBloco);
+}
+
+/**
+ * \brief Esta é a função auxiliar do parser que redireciona para as respetivas operações dos blocos
+ *
+ * @param token : sinal ou símbolo respetivo a cada operação
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ * @param bloco : indicador de que possuímos um bloco (abertura de {)
+ * @param addressBloco : stack onde vai ser guardado o bloco
+ */
+void blocoOperations (char *token, STACK *stackPointer[], int *flag, int *bloco, STACK *addressBloco)
+{
+    if (strstr("~",token) != NULL) executaBloco(stackPointer, flag, bloco, addressBloco);
+    //if (strstr("%",token) != NULL) aplicaBloco(stackPointer, flag, addressBloco);
+}
+
+/**
+ * \brief Esta é a função auxiliar do parser que redireciona para as respetivas operações
+ *
+ * @param token : sinal ou símbolo respetivo a cada operação
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ * @param bloco : indicador de que possuímos um bloco (abertura de {)
+ * @param addressBloco : stack onde vai ser guardado o bloco
+ */
+void decideOperations(char *token, STACK *stackPointer[], int *flag, int *bloco, STACK *addressBloco)
+{
+    if (*bloco == 1) PUSHS(addressBloco, token);
+    else
+    {
+        int r = parserOperations (token,stackPointer[*flag]);
+        if (r==0) arrayOperations(token,stackPointer, flag);
+    }
 }
 
 /**
  * \brief Esta é a função auxiliar ao parser que redireciona para as respetivas operações da stack
  *
- * @param token : sinal respetivo a cada operação
+ * @param token : sinal ou símbolo respetivo a cada operação
+ * @param stack : local onde se encontram os operadores e onde vai ser guardado o resultado
+ *
+ * @return valor que permite saber se as operações foram realizadas corretamente
  */
-int parserOperations(char *t, STACK *stk)
+int parserOperations(char *token, STACK *stack)
 {
     int r = 0;
 
-    if (strstr("+-*/()%#" ,t)   != NULL) (r = aritmeticas(t,stk));
-    if (strstr("&|^~e&e|" ,t)   != NULL) (r = logicas    (t,stk));
-    if (strstr("_;\\@$,N/S/"  ,t) != NULL) (r = opStack    (t,stk));
-    if (strstr("clifst"    ,t)   != NULL) (r = convertions(t,stk));
-    if (strstr("<>=!?e<e>",t)   != NULL) (r = comparison (t,stk));
-
-
+    if (strstr("+-*/()%#"   ,token)  != NULL) (r = aritmeticas(token,stack));
+    if (strstr("&|^~e&e|"   ,token)  != NULL) (r = logicas    (token,stack));
+    if (strstr("_;\\@$,N/S/",token)  != NULL) (r = opStack    (token,stack));
+    if (strstr("clifst"     ,token)  != NULL) (r = convertions(token,stack));
+    if (strstr("<>=!?e<e>"  ,token)  != NULL) (r = comparison (token,stack));
 
     return r;
 }
 
-//falta documentar
-void arrayOperations(char *t, STACK *arrayList[], int *flag)
+/**
+ * \brief Esta é a função auxiliar ao parser que redireciona para as respetivas operações dos arrays
+ *
+ * @param token : sinal ou símbolo respetivo a cada operação
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
+void arrayOperations(char *token, STACK *stackPointer[], int *flag)
 {
-    if (strcmp(t,"~") == 0) arrayToStack(arrayList[*flag], arrayList[*flag+1]);
-    if (strcmp(t,"=") == 0) indexArray(arrayList[*flag], arrayList[*flag+1]);
-    if (strcmp(t,",") ==0) range(arrayList, flag);
-    if (strcmp(t,"*") ==0) replicate(arrayList, flag);
-    if (strcmp(t,"(") ==0) removeFirst(arrayList, flag);
-    if (strcmp(t,")") ==0) removeLast(arrayList, flag);
-    if (strcmp(t,"<") ==0) firstElements(arrayList, flag);
-    if (strcmp(t,">") ==0) lastElements(arrayList, flag);
-    if (strcmp(t,"+") ==0) concatenarArrays(arrayList, flag);
+    if (strcmp(token,"~") == 0) arrayToStack    (stackPointer[*flag], stackPointer[*flag+1]);
+    if (strcmp(token,"=") == 0) indexArray      (stackPointer[*flag], stackPointer[*flag+1]);
+    if (strcmp(token,",") == 0) range           (stackPointer, flag);
+    if (strcmp(token,"*") == 0) replicate       (stackPointer, flag);
+    if (strcmp(token,"(") == 0) removeFirst     (stackPointer, flag);
+    if (strcmp(token,")") == 0) removeLast      (stackPointer, flag);
+    if (strcmp(token,"<") == 0) firstElements   (stackPointer, flag);
+    if (strcmp(token,">") == 0) lastElements    (stackPointer, flag);
+    if (strcmp(token,"+") == 0) concatenarArrays(stackPointer, flag);
 }
 
-//falta documentar
-void decideOperations(char *t, STACK *arrayList[], int *flag, int *bloco, STACK *endBloco)
+/**
+ * \brief Esta é a função auxiliar ao parser que cria uma string na stack
+ *
+ * @param token : símbolo ou letra da string
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
+void criarString(char *token, STACK *stackPointer[], int *flag)
 {
-    if (*bloco == 1) PUSHS(endBloco, t);
-    else
-    {
-        int r = parserOperations(t,arrayList[*flag]);
-        if (r==0) arrayOperations(t,arrayList, flag);
-    }
-}
+    int i, tam = strlen(token);
+    char *aux = malloc((tam+1) * sizeof(char));
 
-void criarString(char *t, STACK *arrayList[], int *flag)
-{
-    for (unsigned int i = 0; i < strlen(t)-2; i++)
+    for (i = 0; i < tam-1; i++)
     {
-        if (t[i] == '.') t[i] = ' ';
+        token[i] = token[i+1];
+        if (token[i] == '.') token[i] = ' ';
     }
 
-    for (unsigned int i = 0; i < strlen(t)-1; i++)
+    for (i = 0; i < 2; i++)
     {
-        t[i] = t[i+1];
+        token[tam-1]='\0';
+        token[tam-1]='\0';
     }
 
-    for (int i=0; i<2; i++)
-    {
-        t[strlen(t)-1]='\0';
-    }
-
-    int x = strlen(t);
-    char *p = malloc((x+1) * sizeof(char));
-    strcpy(p,t);
-    PUSHS(arrayList[*flag], p);
+    strcpy(aux,token);
+    PUSHS(stackPointer[*flag], aux);
 }
 
 
@@ -187,138 +257,143 @@ void atribuicao (DADOS *variaveis)
 }
 
 /**
+ * \brief Esta é a função auxiliar da parser que imprime a stack
+ *
+ * @param stack: stack
+ */
+void PRINT_STACK(STACK *stack)
+{
+    int i;
+    for (i = 0; i < stack->count; i++) {
+        PRINT_DADOS (stack->comp[i]);
+    }
+
+    //printf("\n\nCOUNT : %d\n", stack->count);
+    //printf ("SIZE : %d\n", stack->size);
+}
+
+/**
  * \brief Esta é a função auxiliar da PRINT_STACK que imprime um elemento dos diferentes tipos de dados
  *
- * @param d : É o elemento a ser imprimido
+ * @param P : É o elemento a ser imprimido
  */
-void print_DADOS (DADOS d)
+void PRINT_DADOS (DADOS P)
 {
-    switch (d.tipo)
+    switch (P.tipo)
     {
-        case LONG : printf("%ld", d.data.vl); break;
-        case DOUBLE : printf("%g", d.data.vd); break;
-        case CHAR : printf("%c", d.data.vc); break;
-        case STRING : printf("%s", d.data.vs); break;
-        case ARRAY : PRINT_STACK(d.data.va); break;
-        case BLOCO : PRINT_BLOCO(d.data.vb); break;
+        case LONG : printf("%ld", P.data.vl); break;
+        case DOUBLE : printf("%g", P.data.vd); break;
+        case CHAR : printf("%c", P.data.vc); break;
+        case STRING : printf("%s", P.data.vs); break;
+        case ARRAY : PRINT_STACK(P.data.va); break;
+        case BLOCO : PRINT_BLOCO(P.data.vb); break;
     }
 }
 
 /**
- * \brief Esta é a função auxiliar da parser que imprime a stack
+ * \brief Esta é a função auxiliar da print_DADOS que imprime os blocos
  *
- * @param stk: stack
+ * @param stack: stack
  */
-void PRINT_STACK(STACK *stk)
-{
-    int i;
-    for (i = 0; i < stk->count; i++) {
-        print_DADOS (stk->comp[i]);
-    }
-
-    //printf("\n\nCOUNT : %d\n", stk->count);
-    //printf ("SIZE : %d\n", stk->size);
-}
-
-void PRINT_BLOCO(STACK *stk)
+void PRINT_BLOCO(STACK *stack)
 {
     int i;
 
     printf("{ ");
-    for (i = 0; i < stk->count; i++) {
-        print_DADOS (stk->comp[i]);
+
+    for (i = 0; i < stack->count; i++)
+    {
+        PRINT_DADOS (stack->comp[i]);
         putchar(' ');
     }
     printf("}");
 
-    //printf("\n\nCOUNTB : %d\n", stk->count);
-    //printf ("SIZEB : %d\n", stk->size);
+    //printf("\n\nCOUNTB : %d\n", stack->count);
+    //printf ("SIZEB : %d\n", stack->size);
 }
 
 /**
  * \brief Esta é a função auxiliar que retira o último elemento do tipo long da stack
  *
- * @param stk: stack
+ * @param stack: stack
  *
  * @returns O último elemento da stack
  */
-long POPL(STACK *stk)
+long POPL(STACK *stack)
 {
-    long x;
-    x = stk->comp[stk->count -1].data.vl;
-    stk->count--;
+    long x = stack->comp[stack->count -1].data.vl;
+    stack->count--;
     return x;
 }
 
 /**
  * \brief Esta é a função auxiliar que retira o último elemento do tipo double da stack
  *
- * @param stk: stack
+ * @param stack: stack
  *
  * @returns O último elemento da stack
  */
-double POPD(STACK *stk)
+double POPD(STACK *stack)
 {
     double x;
-    if (stk->comp[stk->count-1].tipo == 1) x = stk->comp[stk->count -1].data.vl;
-    else x = stk->comp[stk->count -1].data.vd;
-    stk->count--;
+    if (stack->comp[stack->count-1].tipo == LONG) x = stack->comp[stack->count -1].data.vl;
+    else x = stack->comp[stack->count -1].data.vd;
+    stack->count--;
     return x;
 }
 
 /**
  * \brief Esta é a função auxiliar que retira o último elemento do tipo char da stack
  *
- * @param stk: stack
+ * @param stack: stack
  *
  * @returns O último elemento da stack
  */
-char POPC(STACK *stk)
+char POPC(STACK *stack)
 {
-    char x;
-    x = stk->comp[stk->count -1].data.vc;
-    stk->count--;
+    char x = stack->comp[stack->count -1].data.vc;
+    stack->count--;
     return x;
 }
 
 /**
  * \brief Esta é a função auxiliar que retira o último elemento do tipo string da stack
  *
- * @param stk: stack
+ * @param stack: stack
  *
  * @returns O último elemento da stack
  */
-char *POPS(STACK *stk)
+char *POPS(STACK *stack)
 {
-    char *x = stk->comp[stk->count-1].data.vs;
-    stk->count--;
+    char *x = stack->comp[stack->count-1].data.vs;
+    stack->count--;
     return x;
 }
 
 /**
  * \brief Esta é a função auxiliar que retira o último elemento da stack
  *
- * @param stk: stack
+ * @param stack: stack
  *
  * @returns O último elemento da stack
  */
-DADOS POP(STACK *stk)
+DADOS POP(STACK *stack)
 {
-    DADOS P = stk->comp[stk->count-1];
-    stk->count--;
+    DADOS P = stack->comp[stack->count-1];
+    stack->count--;
     return P;
 }
 
 /**
  * @brief Esta é a função que verifica o elemento do topo da stack
  *
- * @param stk: stack
+ * @param stack: stack
  *
  * @returns O elemento no topo da stack
  */
-DADOS TOP(STACK *stk)
+DADOS TOP(STACK *stack)
 {
-    DADOS P = stk->comp[stk->count-1];
+    DADOS P = stack->comp[stack->count-1];
     return P;
 }
 
@@ -326,152 +401,149 @@ DADOS TOP(STACK *stk)
  * \brief Esta é a função auxiliar que coloca um elemento do tipo long na stack
  *
  * @param x : É o elemento que queremos colocar na stack
- * @param stk: stack
+ * @param stack: stack
  */
-void PUSHL(STACK *stk, long x)
+void PUSHL(STACK *stack, long x)
 {
-    if (stk->count == stk->size) realocarM(stk);
+    if (stack->count == stack->size) realocarM(stack);
 
-    stk->comp[stk->count].tipo = 1;
-    stk->comp[stk->count].data.vl = x;
-    stk->count++;
+    stack->comp[stack->count].tipo = LONG;
+    stack->comp[stack->count].data.vl = x;
+    stack->count++;
 }
 
 /**
  * \brief Esta é a função auxiliar que coloca um elemento do tipo double na stack
  *
  * @param x : É o elemento que queremos colocar na stack
- * @param stk: stack
+ * @param stack: stack
  */
-void PUSHD(STACK *stk, double x)
+void PUSHD(STACK *stack, double x)
 {
-    if (stk->count == stk->size) realocarM(stk);
+    if (stack->count == stack->size) realocarM(stack);
 
-    stk->comp[stk->count].tipo = 2;
-    stk->comp[stk->count].data.vd = x;
-    stk->count++;
+    stack->comp[stack->count].tipo = DOUBLE;
+    stack->comp[stack->count].data.vd = x;
+    stack->count++;
 }
 
 /**
  * \brief Esta é a função auxiliar que coloca um elemento do tipo char na stack
  *
  * @param x : É o elemento que queremos colocar na stack
- * @param stk: stack
+ * @param stack: stack
  */
-void PUSHC(STACK *stk, char x)
+void PUSHC(STACK *stack, char x)
 {
-    if (stk->count == stk->size) realocarM(stk);
+    if (stack->count == stack->size) realocarM(stack);
 
-    stk->comp[stk->count].tipo = 4;
-    stk->comp[stk->count].data.vc = x;
-    stk->count++;
+    stack->comp[stack->count].tipo = CHAR;
+    stack->comp[stack->count].data.vc = x;
+    stack->count++;
 }
 
 /**
  * \brief Esta é a função auxiliar que coloca um elemento do tipo string na stack
  *
  * @param x : É o elemento que queremos colocar na stack
- * @param stk: stack
+ * @param stack: stack
  */
-void PUSHS(STACK *stk, char *x)
+void PUSHS(STACK *stack, char *x)
 {
-    if (stk->count == stk->size) realocarM(stk);
+    if (stack->count == stack->size) realocarM(stack);
 
-    stk->comp[stk->count].tipo = 8;
-    stk->comp[stk->count].data.vs = x;
-    stk->count++;
+    stack->comp[stack->count].tipo = STRING;
+    stack->comp[stack->count].data.vs = x;
+    stack->count++;
 }
 
-//falta documentar
-void PUSHA(STACK *stk, STACK *x)
+/**
+ * \brief Esta é a função auxiliar que coloca um elemento do tipo array na stack
+ *
+ * @param array : É o array que queremos colocar na stack
+ * @param stack: stack
+ */
+void PUSHA(STACK *stack, STACK *array)
 {
-    if (stk->count == stk->size) realocarM(stk);
+    if (stack->count == stack->size) realocarM(stack);
 
-    stk->comp[stk->count].tipo = 16;
-    stk->comp[stk->count].data.va = x;
-    stk->count++;
+    stack->comp[stack->count].tipo = ARRAY;
+    stack->comp[stack->count].data.va = array;
+    stack->count++;
 }
 
-void PUSHB (STACK *stk, STACK *x)
+/**
+ * \brief Esta é a função auxiliar que coloca um elemento do tipo bloco na stack
+ *
+ * @param array : É o bloco que queremos colocar na stack
+ * @param stack: stack
+ */
+void PUSHB (STACK *stack, STACK *bloco)
 {
-    if (stk->count == stk->size) realocarM(stk);
+    if (stack->count == stack->size) realocarM(stack);
 
-    stk->comp[stk->count].tipo = 32;
-    stk->comp[stk->count].data.vb = x;
-    stk->count++;
+    stack->comp[stack->count].tipo = BLOCO;
+    stack->comp[stack->count].data.vb = bloco;
+    stack->count++;
 }
 
 /**
  * \brief Esta é a função auxiliar que põe um elemento na stack
  *
  * @param P : É o elemento que queremos colocar na stack
- * @param stk: stack
+ * @param stack: stack
  */
-void PUSH(STACK *stk, DADOS P)
+void PUSH(STACK *stack, DADOS P)
 {
-    if (stk->count == stk->size) realocarM(stk);
+    if (stack->count == stack->size) realocarM(stack);
 
-    stk->comp[stk->count] = P;
-    stk->count++;
+    stack->comp[stack->count] = P;
+    stack->count++;
 }
 
 
 /**
  * \brief Esta é a função auxiliar que verifica os tipos dos dois últimos elementos no topo da stack
  *
- * @param stk: stack
+ * @param stack: stack
  *
  * @returns O valor da soma dos tipos dos dois elementos
  */
-int tipoTop(STACK *stk)
+int somaTiposTop(STACK *stack)
 {
-    TIPO x = stk->comp[stk->count - 1].tipo;
-    TIPO y = stk->comp[stk->count - 2].tipo;
+    TIPO x = stack->comp[stack->count - 1].tipo;
+    TIPO y = stack->comp[stack->count - 2].tipo;
     return (x+y);
 }
 
-//falta documentar
-int areNumbers(STACK *stk)
+/**
+ * \brief Esta é a função auxiliar que verifica se os tipos dos dois últimos elementos no tipo da stack são números
+ *
+ * @param stack: stack
+ *
+ * @returns Caso a resposta seja afirmativa retorna 1, caso contrário retorna 0
+ */
+int areNumbers(STACK *stack)
 {
     int r = 0;
 
-    TIPO x = stk->comp[stk->count - 1].tipo;
-    TIPO y = stk->comp[stk->count - 2].tipo;
+    TIPO x = stack->comp[stack->count - 1].tipo;
+    TIPO y = stack->comp[stack->count - 2].tipo;
 
     if((x == LONG || x == DOUBLE || x == CHAR ) && (y == LONG || y == DOUBLE || y == CHAR)) r = 1;
 
     return r;
 }
 
-//falta documentar
-void criarArray(STACK *arrayList[],  int *flag)
+/**
+ * \brief Esta é a função auxiliar que realoca memória na stack, caso necessário
+ *
+ * @param stack : stack
+ */
+void realocarM (STACK *stack)
 {
-    STACK *array = novaStack();
-    iniciarStack(array);
-    PUSHA(arrayList[*flag], array);
-    (*flag)++;
-    arrayList[*flag] = array;
-}
+    DADOS *t = realloc (stack->comp, 2*stack->size*sizeof(DADOS));
 
-void criarBloco(STACK *arrayList[], int *flag, STACK *endBloco)
-{
-    iniciarStack(endBloco);
-    PUSHB(arrayList[*flag], endBloco);
-}
-
-//falta documentar
-void iniciarStack(STACK *stk)
-{
-    stk->count = 0;
-    stk->size  = 5;
-    stk->comp = malloc (stk->size * sizeof(DADOS));
-}
-
-//falta documentar
-void realocarM (STACK *stk)
-{
-    DADOS *t = realloc (stk->comp, 2*stk->size*sizeof(DADOS));
-
-    stk->comp = t;
-    stk->size*=2;
+    stack->comp = t;
+    stack->size*=2;
 }
