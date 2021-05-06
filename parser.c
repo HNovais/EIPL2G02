@@ -57,10 +57,12 @@ void parser(char *line)
             {
                 (strstr("[]{}", token)                                                   != NULL)  ? parserAux        (token, stackPointer, &flag, &bloco, addressBloco):
                 ((choose->comp[choose->count-1].tipo == BLOCO)&&(strstr("~%,$|", token)  != NULL)) ? blocoOperations  (token, stackPointer, &flag, &bloco, addressBloco):
-                (strstr("+-*/()%#&|^~e&e|_;\\@$clifts<>=!?e<e>,", token)                 != NULL)  ? decideOperations (token, stackPointer, &flag, &bloco, addressBloco):
+                (strstr("+-*/()%#&|^~e&e|_;\\@$clifts<>=!?e<e>,/", token)                != NULL)  ? decideOperations (token, stackPointer, &flag, &bloco, addressBloco):
                 (strchr(token,34)                                                             != NULL)  ? criarString      (token, stackPointer, &flag):
-                (variableTeste(token)                                                            ==0)      ? variableOut      (stackPointer, token, variaveis, &flag):
-                (twoPointsTeste(token)                                                           ==0)      ? variableIn       (stackPointer, token, variaveis, &flag):
+                (strcmp("/S",token)                                                              == 0)     ? decideOperations (token, stackPointer, &flag, &bloco, addressBloco):
+                (strcmp("/N",token)                                                              == 0)     ? decideOperations (token, stackPointer, &flag, &bloco, addressBloco):
+                (variableTeste(token)                                                            == 0)     ? variableOut      (stackPointer, token, variaveis, &flag):
+                (twoPointsTeste(token)                                                           == 0)     ? variableIn       (stackPointer, token, variaveis, &flag):
                 exit(0);
             }
         }
@@ -176,7 +178,7 @@ int parserOperations(char *token, STACK *stack)
 
     if (strstr("+-*/()%#"   ,token)  != NULL) (r = aritmeticas(token,stack));
     if (strstr("&|^~e&e|"   ,token)  != NULL) (r = logicas    (token,stack));
-    if (strstr("_;\\@$,N/S/",token)  != NULL) (r = opStack    (token,stack));
+    if (strstr("_;\\@$,S/N/",token)  != NULL) (r = opStack    (token,stack));
     if (strstr("clifst"     ,token)  != NULL) (r = convertions(token,stack));
     if (strstr("<>=!?e<e>"  ,token)  != NULL) (r = comparison (token,stack));
 

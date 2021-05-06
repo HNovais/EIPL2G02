@@ -73,8 +73,9 @@ int opStack(char *token, STACK *stack)
     if(strcmp(token,"@")  == 0) r = rotateThree(stack);
     if(strcmp(token,"$")  == 0) r = copyN(stack);
     if(strcmp(token,",")  == 0) r = stringSize(stack);
-    //if(strcmp(t,"S/")==0) r = spaces(stack);
-    //if(strcmp(t,"N/")==0) r = newLine(stack);
+    //if(strcmp(token,"S/") == 0) r = spaces(stack);
+    //if(strcmp(token,"N/") == 0) r = newLine(stack);
+    //if(strcmp(token,"/")  == 0) r = separate(stack);
 
 
     return r;
@@ -95,9 +96,8 @@ int convertions(char *token, STACK *stack)
     if(strcmp(token,"i") == 0) r = convInteiro(stack);
     if(strcmp(token,"f") == 0) r = convDouble(stack);
     if(strcmp(token,"c") == 0) r = convCaracter(stack);
-    //if(strcmp(token,"s")==0) r = convString(stack);
     if(strcmp(token,"l") == 0) r = lerLinha(stack);
-    //if(strcmp(token,"t")==0) r = lerTudo(stack);
+    if(strcmp(token,"t") == 0) r = lerTudo(stack);
 
     return r;
 }
@@ -813,6 +813,28 @@ int lerLinha(STACK *stack)
 
 }
 
+int lerTudo(STACK *stack)
+{
+    int r=0;
+    char *s = malloc(10240*sizeof(char));
+    char *t = malloc(10240*sizeof(char));
+    while (fgets(s, 10240, stdin))
+    {
+        strcat(t, s);
+        if (s[0] == '\n') break;
+        r=1;
+    }
+
+    for (int i=0; i < 2; i++)
+    {
+        t[strlen(t)-1] = '\0';
+    }
+
+    PUSHS(stack, t);
+
+    return r;
+}
+
 /**
  * \brief Esta é a função auxiliar que verifica se o penúltimo elemento da stack é menor que o último
  *
@@ -833,23 +855,6 @@ int menor(STACK *stack)
         ((Z.data.vd) < (P.data.vd)) ? PUSHL(stack, 1) : PUSHL(stack, 0);
         r=1;
     }
-    else if (somaTiposTop(stack)==5)
-    {
-        if (stack->comp[stack->count - 1].tipo == CHAR)
-        {
-            P.data.vc = POPD(stack);
-            Z.data.vd = POPD(stack);
-            (Z.data.vd < P.data.vc) ? PUSHL(stack, 1):PUSHL(stack, 0);
-            r=1;
-        }
-        if (stack->comp[stack->count - 2].tipo == CHAR)
-        {
-            P.data.vd = POPD(stack);
-            Z.data.vc = POPD(stack);
-            (Z.data.vc < P.data.vd) ? PUSHL(stack, 1):PUSHL(stack, 0);
-            r=1;
-        }
-    }
     else if (somaTiposTop(stack) == 16)
     {
         P = POP(stack);
@@ -858,10 +863,42 @@ int menor(STACK *stack)
         else PUSHL(stack, 0);
         r=1;
     }
+    else if (somaTiposTop(stack)==5) r = menorChar(stack);
     else r = firstChars(stack);
 
     return r;
 }
+
+/**
+ * \brief Esta é a função auxiliar que trata dos casos em que comparamos números com caracteres
+ *
+ * @param stack : stack
+ *
+ * @return Se a operação for bem sucessida retorna 1, caso contrário retorna 0
+ */
+int menorChar(STACK *stack)
+{
+    int r=0;
+    DADOS P, Z;
+
+    if (stack->comp[stack->count - 1].tipo == CHAR)
+    {
+        P.data.vc = POPD(stack);
+        Z.data.vd = POPD(stack);
+        (Z.data.vd < P.data.vc) ? PUSHL(stack, 1):PUSHL(stack, 0);
+        r=1;
+    }
+    if (stack->comp[stack->count - 2].tipo == CHAR)
+    {
+        P.data.vd = POPD(stack);
+        Z.data.vc = POPD(stack);
+        (Z.data.vc < P.data.vd) ? PUSHL(stack, 1):PUSHL(stack, 0);
+        r=1;
+    }
+
+    return r;
+}
+
 
 /**
  * \brief Esta é a função auxiliar que vai buscar x caracteres ao início da string
@@ -914,23 +951,6 @@ int maior(STACK *stack)
         ((Z.data.vd) > (P.data.vd)) ? PUSHL(stack, 1) : PUSHL(stack, 0);
         r=1;
     }
-    else if (somaTiposTop(stack)==5)
-    {
-        if (stack->comp[stack->count - 1].tipo == CHAR)
-        {
-            P.data.vc = POPD(stack);
-            Z.data.vd = POPD(stack);
-            (Z.data.vd > P.data.vc) ? PUSHL(stack, 1):PUSHL(stack, 0);
-            r=1;
-        }
-        if (stack->comp[stack->count - 2].tipo == CHAR)
-        {
-            P.data.vd = POPD(stack);
-            Z.data.vc = POPD(stack);
-            (Z.data.vc > P.data.vd) ? PUSHL(stack, 1):PUSHL(stack, 0);
-            r=1;
-        }
-    }
     else if (somaTiposTop(stack) == 16)
     {
         P = POP(stack);
@@ -939,7 +959,39 @@ int maior(STACK *stack)
         else PUSHL(stack, 0);
         r=1;
     }
+    else if (somaTiposTop(stack)==5) r = maiorChar(stack);
     else r = lastChars(stack);
+
+    return r;
+}
+
+/**
+ * \brief Esta é a função auxiliar que trata das comparações de números com caracteres
+ *
+ * @param stack : stack
+ *
+ * @return Se a operação for bem sucessida retorna 1, caso contrário retorna 0
+ */
+int maiorChar(STACK *stack)
+{
+    int r=0;
+    DADOS P, Z;
+
+    if (stack->comp[stack->count - 1].tipo == CHAR)
+    {
+        P.data.vc = POPD(stack);
+        Z.data.vd = POPD(stack);
+        (Z.data.vd > P.data.vc) ? PUSHL(stack, 1):PUSHL(stack, 0);
+        r=1;
+    }
+    if (stack->comp[stack->count - 2].tipo == CHAR)
+    {
+        P.data.vd = POPD(stack);
+        Z.data.vc = POPD(stack);
+        (Z.data.vc > P.data.vd) ? PUSHL(stack, 1):PUSHL(stack, 0);
+        r=1;
+    }
+
     return r;
 }
 
