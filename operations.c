@@ -1067,18 +1067,14 @@ int ifThenElse(STACK *stack)
     DADOS P = POP(stack);
     DADOS Z = POP(stack);
     DADOS T = POP(stack);
+    STACK *array = T.data.va;
 
-    if (T.tipo == LONG && T.data.vl == 0) PUSH(stack, P);
-    else if (T.tipo == DOUBLE && T.data.vd == 0) PUSH(stack, P);
-    else if (T.tipo == CHAR && T.data.vc == '\0') PUSH(stack, P);
-    else if (T.tipo == STRING && strlen(T.data.vs) == 0) PUSH(stack, P);
-    else if (T.tipo == ARRAY)
-    {
-        STACK *array = T.data.va;
-        int x = array->count;
-        if (x == 0) PUSH(stack, P); else PUSH(stack, Z);
-    }
-    else PUSH(stack, Z);
+    (T.tipo == LONG && T.data.vl == 0) ? PUSH(stack, P) :
+    (T.tipo == DOUBLE && T.data.vd == 0) ? PUSH(stack, P):
+    (T.tipo == CHAR && T.data.vc == '\0') ? PUSH(stack, P):
+    (T.tipo == STRING && strlen(T.data.vs) == 0) ? PUSH(stack, P) :
+    (T.tipo == ARRAY) ? ((array->count == 0) ? PUSH(stack, P) : PUSH(stack, Z)):
+    PUSH(stack, Z);
 
     return 1;
 }
