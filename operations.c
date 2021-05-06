@@ -994,52 +994,22 @@ int menorDe2(STACK *stack)
 {
     int r = 0;
 
-    DADOS P, Z;
-    P.tipo = stack->comp[stack->count - 1].tipo;
-    Z.tipo = stack->comp[stack->count - 2].tipo;
+    DADOS P = POP(stack);
+    DADOS Z = POP(stack);
 
+    (P.tipo == LONG && Z.tipo == LONG) ?
+    (((P.data.vl)<(Z.data.vl)) ? PUSH(stack, P): PUSH(stack, Z)):
+    (P.tipo == STRING && Z.tipo == STRING) ?
+    ((strcmp(Z.data.vs, P.data.vs) < 0) ? PUSH(stack, Z): PUSH(stack, P)) :
+    (P.tipo == LONG && Z.tipo == DOUBLE) ?
+    (((P.data.vl)<(Z.data.vd)) ? PUSH(stack, P): PUSH(stack, Z)) :
+    (P.tipo == DOUBLE && Z.tipo == LONG) ?
+    (((P.data.vd)<(Z.data.vl)) ? PUSH(stack, P) : PUSH(stack, Z)):
+    (P.tipo == DOUBLE && Z.tipo == DOUBLE) ?
+    (((P.data.vd)<(Z.data.vd)) ? PUSH(stack, P):PUSH(stack, Z)) :
+    exit(0);
+    r = 1;
 
-    if (P.tipo == LONG && Z.tipo == LONG)
-    {
-        r = 1;
-        P = POP(stack);
-        Z = POP(stack);
-        if ((P.data.vl)<(Z.data.vl)) PUSH(stack, P);
-        else PUSH(stack, Z);
-    }
-    if (P.tipo == LONG && Z.tipo == DOUBLE)
-    {
-        r = 1;
-        P = POP(stack);
-        Z = POP(stack);
-        if ((P.data.vl)<(Z.data.vd)) PUSH(stack, P);
-        else PUSH(stack, Z);
-    }
-    if (P.tipo == DOUBLE && Z.tipo == LONG)
-    {
-        r = 1;
-        P = POP(stack);
-        Z = POP(stack);
-        if ((P.data.vd)<(Z.data.vl)) PUSH(stack, P);
-        else PUSH(stack, Z);
-    }
-    if (P.tipo == DOUBLE && Z.tipo == DOUBLE)
-    {
-        r = 1;
-        P = POP(stack);
-        Z = POP(stack);
-        if ((P.data.vd)<(Z.data.vd)) PUSH(stack, P);
-        else PUSH(stack, Z);
-    }
-    if (P.tipo == STRING && Z.tipo == STRING)
-    {
-        P = POP(stack);
-        Z = POP(stack);
-        if(strcmp(Z.data.vs, P.data.vs) < 0) PUSH(stack, Z);
-        else PUSH(stack, P);
-        r=1;
-
-    }
     return r;
 }
 
@@ -1054,53 +1024,22 @@ int maiorDe2(STACK *stack)
 {
     int r = 0;
 
-    DADOS P, Z;
-    P.tipo = stack->comp[stack->count - 1].tipo;
-    Z.tipo = stack->comp[stack->count - 2].tipo;
+    DADOS P = POP(stack);
+    DADOS Z = POP(stack);
 
+    (P.tipo == LONG && Z.tipo == LONG) ?
+    (((P.data.vl)>(Z.data.vl)) ? PUSH(stack, P): PUSH(stack, Z)):
+    (P.tipo == STRING && Z.tipo == STRING) ?
+    ((strcmp(Z.data.vs, P.data.vs) > 0) ? PUSH(stack, Z): PUSH(stack, P)) :
+    (P.tipo == LONG && Z.tipo == DOUBLE) ?
+    (((P.data.vl)>(Z.data.vd)) ? PUSH(stack, P): PUSH(stack, Z)) :
+    (P.tipo == DOUBLE && Z.tipo == LONG) ?
+    (((P.data.vd)>(Z.data.vl)) ? PUSH(stack, P) : PUSH(stack, Z)):
+    (P.tipo == DOUBLE && Z.tipo == DOUBLE) ?
+    (((P.data.vd)>(Z.data.vd)) ? PUSH(stack, P):PUSH(stack, Z)) :
+    exit(0);
+    r = 1;
 
-    if (P.tipo == LONG && Z.tipo == LONG)
-    {
-        r = 1;
-        P = POP(stack);
-        Z = POP(stack);
-        if ((P.data.vl)>(Z.data.vl)) PUSH(stack, P);
-        else PUSH(stack, Z);
-    }
-    if (P.tipo == LONG && Z.tipo == DOUBLE)
-    {
-        r = 1;
-        P = POP(stack);
-        Z = POP(stack);
-        if ((P.data.vl)>(Z.data.vd)) PUSH(stack, P);
-        else PUSH(stack, Z);
-    }
-    if (P.tipo == DOUBLE && Z.tipo == LONG)
-    {
-        r = 1;
-        P = POP(stack);
-        Z = POP(stack);
-        if ((P.data.vd)>(Z.data.vl)) PUSH(stack, P);
-        else PUSH(stack, Z);
-    }
-    if (P.tipo == DOUBLE && Z.tipo == DOUBLE)
-    {
-        r = 1;
-        P = POP(stack);
-        Z = POP(stack);
-        if ((P.data.vd)>(Z.data.vd)) PUSH(stack, P);
-        else PUSH(stack, Z);
-    }
-    if (P.tipo == STRING && Z.tipo == STRING)
-    {
-        r=1;
-        P = POP(stack);
-        Z = POP(stack);
-        if(strcmp(Z.data.vs, P.data.vs) < 0) PUSH(stack, P);
-        else PUSH(stack, Z);
-
-
-    }
     return r;
 }
 /**

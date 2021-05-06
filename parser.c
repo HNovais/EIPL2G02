@@ -42,8 +42,6 @@ void parser(char *line)
     STACK *stackPointer[100];
     stackPointer[0] = stack;
 
-
-
     for (char *token = strtok(line, delims); token != NULL; token = strtok(NULL, delims))
     {
         if (bloco == 1) choose = addressBloco;
