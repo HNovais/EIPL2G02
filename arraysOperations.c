@@ -8,8 +8,38 @@
 #include <assert.h>
 #include <math.h>
 
+
 /**
- * \brief Esta é a função auxiliar da arrayOperations que coloca na stack todos os elementos do array
+ * \brief Esta é a função auxiliar da arrayOperations que redireciona para as operações nos Arrays
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+*/
+void aritArrayOperations (char *token, STACK *stackPointer[], int *flag)
+{
+    if (strcmp(token,"~") == 0) arrayToStack    (stackPointer[*flag], stackPointer[*flag+1]);
+    if (strcmp(token,"=") == 0) indexArray      (stackPointer[*flag], stackPointer[*flag+1]);
+    if (strcmp(token,",") == 0) range           (stackPointer, flag);
+    if (strcmp(token,"*") == 0) replicate       (stackPointer, flag);
+}
+
+/**
+ * \brief Esta é a função auxiliar da arrayOperations que redireciona para operações com os elementos do Array
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+*/
+void elemArrayOperations (char *token, STACK *stackPointer[], int *flag)
+{
+    if (strcmp(token,"(") == 0) removeFirst     (stackPointer, flag);
+    if (strcmp(token,")") == 0) removeLast      (stackPointer, flag);
+    if (strcmp(token,"<") == 0) firstElements   (stackPointer, flag);
+    if (strcmp(token,">") == 0) lastElements    (stackPointer, flag);
+}
+
+
+/**
+ * \brief Esta é a função auxiliar da aritArrayOperations que coloca na stack todos os elementos do array
  *
  * @param stack : stack
  * @param array : local onde está o array
@@ -37,7 +67,7 @@ void arrayToStack(STACK *stack, STACK *array)
 }
 
 /**
- * \brief Esta é a função auxiliar da arrayOperations que dá o tamanho do array
+ * \brief Esta é a função auxiliar da aritArrayOperations que dá o tamanho do array
  *
  * @param stack : stack
  * @param array : local onde está o array
@@ -49,7 +79,7 @@ void size(STACK *stack, STACK *array)
 }
 
 /**
- * \brief Esta é a função auxiliar da arrayOperations que vai buscar o valor por índice
+ * \brief Esta é a função auxiliar da aritArrayOperations que vai buscar o valor por índice
  *
  * @param stack : stack
  * @param array : local onde está o array
@@ -70,7 +100,7 @@ void indexArray(STACK *stack, STACK *array)
 }
 
 /**
- * \brief Esta é a função auxiliar da arrayOperations que cria um array com x número de elementos
+ * \brief Esta é a função auxiliar da aritArrayOperations que cria um array com x número de elementos
  *
  * @param stackPointer : array de apontadores para a stack ou arrays criados
  * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
@@ -96,7 +126,7 @@ void range (STACK *stackPointer[], int *flag)
 }
 
 /**
- * \brief Esta é a função auxiliar da arrayOperations que repete um array
+ * \brief Esta é a função auxiliar da aritArrayOperations que repete um array
  *
  * @param stackPointer : array de apontadores para a stack ou arrays criados
  * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
@@ -115,7 +145,7 @@ void replicate (STACK *stackPointer[], int *flag)
 }
 
 /**
- * \brief Esta é a função auxiliar da arrayOperations que remove o primeiro elemento e o coloca na stack
+ * \brief Esta é a função auxiliar da elemArrayOperations que remove o primeiro elemento e o coloca na stack
  *
  * @param stackPointer : array de apontadores para a stack ou arrays criados
  * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
@@ -137,7 +167,7 @@ void removeFirst (STACK *stackPointer[], int *flag)
 }
 
 /**
- * \brief Esta é a função auxiliar da arrayOperations que remove o último elemento e o coloca na stack
+ * \brief Esta é a função auxiliar da elemArrayOperations que remove o último elemento e o coloca na stack
  *
  * @param stackPointer : array de apontadores para a stack ou arrays criados
  * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
@@ -153,7 +183,7 @@ void removeLast (STACK *stackPointer[], int *flag)
 }
 
 /**
- * \brief Esta é a função auxiliar da arrayOperations que vai buscar x valores do ínicio de um array
+ * \brief Esta é a função auxiliar da elemArrayOperations que vai buscar x valores do ínicio de um array
  *
  * @param stackPointer : array de apontadores para a stack ou arrays criados
  * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
@@ -172,7 +202,7 @@ void firstElements(STACK *stackPointer[], int *flag)
 }
 
 /**
- * \brief Esta é a função auxiliar da arrayOperations que vai buscar x valores do fim de um array
+ * \brief Esta é a função auxiliar da elemArrayOperations que vai buscar x valores do fim de um array
  *
  * @param stackPointer : array de apontadores para a stack ou arrays criados
  * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
@@ -196,7 +226,7 @@ void lastElements(STACK *stackPointer[], int *flag)
 }
 
 /**
- * \brief Esta é a função auxiliar da arrayOperations que concatena arrays e/ou outros elementos
+ * \brief Esta é a função auxiliar da aritArrayOperations que concatena arrays e/ou outros elementos
  *
  * @param stackPointer : array de apontadores para a stack ou arrays criados
  * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
@@ -210,7 +240,7 @@ void concatenarArrays(STACK *stackPointer[], int *flag)
 }
 
 /**
- * \brief Esta é a função auxiliar da aconcatenarArrays que concatena um array e um número
+ * \brief Esta é a função auxiliar da concatenarArrays que concatena um array e um número
  *
  * @param stackPointer : array de apontadores para a stack ou arrays criados
  * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
@@ -222,7 +252,7 @@ void concatenaArrNum(STACK *stackPointer[], int *flag)
 }
 
 /**
- * \brief Esta é a função auxiliar da aconcatenarArrays que concatena dois arrays ou um número e um array
+ * \brief Esta é a função auxiliar da concatenarArrays que concatena dois arrays ou um número e um array
  *
  * @param stackPointer : array de apontadores para a stack ou arrays criados
  * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)

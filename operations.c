@@ -1102,7 +1102,6 @@ int stringSize(STACK *stack)
         PUSHL(stack, x);
         r = 1;
     }
-
     return r;
 }
 

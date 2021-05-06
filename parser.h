@@ -109,6 +109,8 @@ int logicas(char *token, STACK *stack);
 int opStack(char *token, STACK *stack);
 int convertions(char *token, STACK *stack);
 int comparison(char *token, STACK *stack);
+void aritArrayOperations (char *token, STACK *stackPointer[], int *flag);
+void elemArrayOperations (char *token, STACK *stackPointer[], int *flag);
 void arrayToStack(STACK *stack, STACK *array);
 void size(STACK *stack, STACK *array);
 void indexArray(STACK *stack, STACK *array);

@@ -194,14 +194,8 @@ int parserOperations(char *token, STACK *stack)
  */
 void arrayOperations(char *token, STACK *stackPointer[], int *flag)
 {
-    if (strcmp(token,"~") == 0) arrayToStack    (stackPointer[*flag], stackPointer[*flag+1]);
-    if (strcmp(token,"=") == 0) indexArray      (stackPointer[*flag], stackPointer[*flag+1]);
-    if (strcmp(token,",") == 0) range           (stackPointer, flag);
-    if (strcmp(token,"*") == 0) replicate       (stackPointer, flag);
-    if (strcmp(token,"(") == 0) removeFirst     (stackPointer, flag);
-    if (strcmp(token,")") == 0) removeLast      (stackPointer, flag);
-    if (strcmp(token,"<") == 0) firstElements   (stackPointer, flag);
-    if (strcmp(token,">") == 0) lastElements    (stackPointer, flag);
+    if(strstr("~=,*", token) != NULL) aritArrayOperations (token, stackPointer, flag);
+    if(strstr("<>()", token) != NULL) elemArrayOperations (token, stackPointer, flag);
     if (strcmp(token,"+") == 0) concatenarArrays(stackPointer, flag);
 }
 
