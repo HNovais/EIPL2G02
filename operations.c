@@ -253,7 +253,18 @@ int multiplicacao (STACK *stack)
             PUSHD(stack, P.data.vd*Z.data.vd);
         }
     }
-    else if (somaTiposTop(stack) == 9)
+    else r = replicateString(stack);
+
+    return r;
+}
+
+int replicateString(STACK *stack)
+{
+    int r = 0;
+
+    DADOS P, Z;
+
+    if (somaTiposTop(stack) == 9)
     {
         P = POP(stack);
         Z = POP(stack);
@@ -267,6 +278,7 @@ int multiplicacao (STACK *stack)
         PUSHS(stack, Z.data.vs);
         r = 1;
     }
+
     return r;
 }
 

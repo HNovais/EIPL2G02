@@ -72,6 +72,7 @@ void realocarM (STACK *stack);
 int soma(STACK *stack);
 int subtracao(STACK *stack);
 int multiplicacao(STACK *stack);
+int replicateString(STACK *stack);
 int divisao(STACK *stack);
 int incrementar(STACK *stack);
 int decrementar(STACK *stack);
