@@ -273,8 +273,9 @@ void concatenaResto(STACK *stackPointer[], int *flag)
 /**
  * \brief Esta é a função auxiliar da concatenarArrays que concatena um número e um array, por esta ordem
  *
- * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param stackPointerarr : array de apontadores para a stack ou arrays criados
  * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ * @param array : array retirado da stack
  * @param P : local onde está guardado o array
  */
 void concatenaNumArr (STACK *array, STACK *stackPointer[], int *flag, DADOS P)
@@ -295,6 +296,7 @@ void concatenaNumArr (STACK *array, STACK *stackPointer[], int *flag, DADOS P)
  *
  * @param stackPointer : array de apontadores para a stack ou arrays criados
  * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ * @param array : array retirado da stack
  * @param P : local onde está guardado um dos arraya
  */
 void concatenaArrArr (STACK *array, STACK *stackPointer[], int *flag, DADOS P)
