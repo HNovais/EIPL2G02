@@ -134,8 +134,6 @@ int stringSize(STACK *stack);
 void executaBloco(STACK *stackPointer[], int *flag, int *bloco, STACK *adressBloco);
 void aplicaBloco(STACK *stackPointer[], int *flag, STACK *addressBloco);
 void foldBloco(STACK *stackPointer[], int *flag);
-
-//void aplicaBloco(STACK *stackPointer[], int *flag, STACK *adressBloco);
 //int spaces(STACK *stack);
 //int newLine(STACK *stack);
 

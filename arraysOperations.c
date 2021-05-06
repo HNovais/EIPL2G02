@@ -241,7 +241,7 @@ void concatenarArrays(STACK *stackPointer[], int *flag)
 }
 
 /**
- * \brief Esta é a função auxiliar da concatenarArrays que concatena um array e um número
+ * \brief Esta é a função auxiliar da concatenarArrays que concatena um array e um número, por esta ordem
  *
  * @param stackPointer : array de apontadores para a stack ou arrays criados
  * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
@@ -270,6 +270,13 @@ void concatenaResto(STACK *stackPointer[], int *flag)
     else concatenaArrArr(arrayP, stackPointer, flag, Z);
 }
 
+/**
+ * \brief Esta é a função auxiliar da concatenarArrays que concatena um número e um array, por esta ordem
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ * @param P : local onde está guardado o array
+ */
 void concatenaNumArr (STACK *array, STACK *stackPointer[], int *flag, DADOS P)
 {
     criarArray(stackPointer, flag);
@@ -283,6 +290,13 @@ void concatenaNumArr (STACK *array, STACK *stackPointer[], int *flag, DADOS P)
     }
 }
 
+/**
+ * \brief Esta é a função auxiliar da concatenarArrays que concatena dois arrays
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ * @param P : local onde está guardado um dos arraya
+ */
 void concatenaArrArr (STACK *array, STACK *stackPointer[], int *flag, DADOS P)
 {
     criarArray(stackPointer, flag);
@@ -369,8 +383,6 @@ void aplicaBloco(STACK *stackPointer[], int *flag, STACK *addressBloco)
  *
  * @param stackPointer : array de apontadores para a stack ou arrays criados
  * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
- * @param bloco : indicador de que possuímos um bloco (abertura de {)
- * @param addressBloco : stack onde vai ser guardado o bloco
  */
 void foldBloco(STACK *stackPointer[], int *flag)
 {

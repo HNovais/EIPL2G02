@@ -12,7 +12,9 @@
  * \brief Esta é a função auxiliar da função parserOperacoes que trata os casos relacionados com operações aritméticas
  *
  * @param stack: stack
- * @param t: token
+ * @param token: token
+ *
+ * @returns Se alguma das operações for bem sucessida retorna 1, caso contrário retorna 0
  */
 int aritmeticas(char *token, STACK *stack)
 {
@@ -34,7 +36,9 @@ int aritmeticas(char *token, STACK *stack)
  * \brief Esta é a função auxiliar da função parserOperacoes que trata os casos relacionados com operações lógicas
  *
  * @param stack: stack
- * @param t: token
+ * @param token: token
+ *
+ * @returns Se alguma das operações for bem sucessida retorna 1, caso contrário retorna 0
  */
 int logicas(char *token, STACK *stack)
 {
@@ -54,7 +58,9 @@ int logicas(char *token, STACK *stack)
  * \brief Esta é a função auxiliar da função parserOperacoes que trata os casos relacionados com operações da stack
  *
  * @param stack: stack
- * @param t: token
+ * @param token: token
+ *
+ * @returns Se alguma das operações for bem sucessida retorna 1, caso contrário retorna 0
  */
 
 int opStack(char *token, STACK *stack)
@@ -78,7 +84,9 @@ int opStack(char *token, STACK *stack)
  * \brief Esta é a função auxiliar da função parserOperacoes que trata os casos relacionados com conversões entre tipos
  *
  * @param stack: stack
- * @param t: tokenR
+ * @param token: token
+ *
+ * @returns Se alguma das operações for bem sucessida retorna 1, caso contrário retorna 0
  */
 int convertions(char *token, STACK *stack)
 {
@@ -98,7 +106,9 @@ int convertions(char *token, STACK *stack)
  * \brief Esta é a função auxiliar da função parserOperacoes que trata os casos relacionados com comparações de elementos da stack
  *
  * @param stack: stack
- * @param t: token
+ * @param token: token
+ *
+ * @returns Se alguma das operações for bem sucessida retorna 1, caso contrário retorna 0
  */
 int comparison(char *token, STACK *stack)
 {
@@ -116,7 +126,7 @@ int comparison(char *token, STACK *stack)
 }
 
 /**
- * \brief Esta é a função auxiliar que permite a soma de dois elementos da stack e a concatenação de strings
+ * \brief Esta é a função auxiliar que permite a soma de dois elementos da stack
  *
  * @param stack : stack
  *
@@ -145,6 +155,13 @@ int soma (STACK *stack)
     return r;
 }
 
+/**
+ * \brief Esta é a função auxiliar que permite a concatenação de strings e/ou chars e strings
+ *
+ * @param stack : stack
+ *
+ * @return Se a operação for bem sucessida retorna 1, caso contrário retorna 0
+ */
 int concatenarStrings(STACK *stack)
 {
     int r = 0;
@@ -235,7 +252,7 @@ int subtracao (STACK *stack)
 }
 
 /**
- * \brief Esta é a função auxiliar que permite a multiplicação de dois elementos da stack e a replicação de strings
+ * \brief Esta é a função auxiliar que permite a multiplicação de dois elementos da stack
  *
  * @param stack : stack
  *
@@ -267,6 +284,13 @@ int multiplicacao (STACK *stack)
     return r;
 }
 
+/**
+ * \brief Esta é a função auxiliar que permite a replicação de strings
+ *
+ * @param stack : stack
+ *
+ * @return Se a operação for bem sucessida retorna 1, caso contrário retorna 0
+ */
 int replicateString(STACK *stack)
 {
     int r = 0;
@@ -790,7 +814,7 @@ int lerLinha(STACK *stack)
 }
 
 /**
- * \brief Esta é a função auxiliar que verifica se o penúltimo elemento da stack é menor que o último e que vai buscar a caracteres de uma string no início
+ * \brief Esta é a função auxiliar que verifica se o penúltimo elemento da stack é menor que o último
  *
  * @param stack : stack
  *
@@ -839,6 +863,13 @@ int menor(STACK *stack)
     return r;
 }
 
+/**
+ * \brief Esta é a função auxiliar que vai buscar x caracteres ao início da string
+ *
+ * @param stack : stack
+ *
+ * @return Se a operação for bem sucessida retorna 1, caso contrário retorna 0
+ */
 int firstChars(STACK *stack)
 {
     int r = 0;
@@ -864,7 +895,7 @@ int firstChars(STACK *stack)
 }
 
 /**
- * \brief Esta é a função auxiliar que verifica se o penúltimo elemento da stack é maior que o último e que vai buscar a caracteres de uma string no fim
+ * \brief Esta é a função auxiliar que verifica se o penúltimo elemento da stack é maior que o último
  *
  * @param stack : stack
  *
@@ -912,6 +943,13 @@ int maior(STACK *stack)
     return r;
 }
 
+/**
+ * \brief Esta é a função auxiliar que vai buscar x caracteres ao fim da string
+ *
+ * @param stack : stack
+ *
+ * @return Se a operação for bem sucessida retorna 1, caso contrário retorna 0
+ */
 int lastChars(STACK *stack)
 {
     int r = 0;
@@ -1187,31 +1225,3 @@ void variableIn (STACK *stackPointer[], char *token, DADOS variaveis[26], int *f
 
     variaveis[k-65] = P;
 }
-
-
-
-/*
-int newLine(STACK *stack)
-{
-    int r;
-    DADOS P = POP(stack);
-    int x = strlen(P.data.vs);
-    char *s = malloc(x*sizeof(char));
-
-    for ( int i=0; i < x-1; i++)
-    {
-        if (P.data.vs[i] == ' ' || P.data.vs[i] == '\0')  s[i] = '\n';
-        else s[i] = P.data.vs[i];
-    }
-
-    PUSHS(stack, s);
-    r=1;
-
-    return r;
-}*/
-
-/*
-int spaces (STACK *stack)
-{
-
-}*/
