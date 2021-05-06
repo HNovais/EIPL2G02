@@ -841,6 +841,13 @@ int lerLinha(STACK *stack)
 
 }
 
+/**
+ * \brief Esta é a função auxiliar que lê o conteúdo de todas as linhas seguintes
+ *
+ * @param stack : stack
+ *
+ * @return Se a operação for bem sucessida retorna 1, caso contrário retorna 0
+ */
 int lerTudo(STACK *stack)
 {
     int r=0;
