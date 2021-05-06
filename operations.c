@@ -889,33 +889,51 @@ int igual(STACK *stack)
 
     DADOS P, Z;
 
-    if (r != 1) {
-        if (somaTiposTop(stack) == 16) {
-            P = POP(stack);
-            Z = POP(stack);
-            int result = strcmp(P.data.vs, Z.data.vs);
-            if (result == 0) PUSHL(stack, 1);
-            else PUSHL(stack, 0);
-            r = 1;
-        } else if (somaTiposTop(stack) == 9) {
-            P.data.vl = POPL(stack);
-            DADOS Z = POP(stack);
-            PUSHC(stack, Z.data.vs[P.data.vl]);
-            r = 1;
-        }
-    }
-    else
+    if (r == 1)
     {
         P.data.vd = POPD(stack);
         Z.data.vd = POPD(stack);
-        if ((Z.data.vd) == (P.data.vd))
-            PUSHL(stack, 1);
-        else
-            PUSHL(stack, 0);
+        ((Z.data.vd) == (P.data.vd)) ? PUSHL(stack, 1) : PUSHL(stack, 0);
         r = 1;
     }
+    else r = igualStrings(stack);
+
     return r;
 }
+
+/**
+ * \brief Esta é a função auxiliar que compara os elementos no topo da stack que sejam strings
+ *
+ * @param stack : stack
+ *
+ * @return Se a operação for bem sucessida retorna 1, caso contrário retorna 0
+ */
+int igualStrings(STACK *stack)
+{
+    int r = 0;
+
+    DADOS P, Z;
+
+    if (somaTiposTop(stack) == 16)
+    {
+        P = POP(stack);
+        Z = POP(stack);
+        int result = strcmp(P.data.vs, Z.data.vs);
+        (result == 0) ? PUSHL(stack, 1) : PUSHL(stack, 0);
+        r = 1;
+    }
+    else if (somaTiposTop(stack) == 9)
+    {
+        P.data.vl = POPL(stack);
+        DADOS Z = POP(stack);
+        PUSHC(stack, Z.data.vs[P.data.vl]);
+        r = 1;
+    }
+    else  r = 0;
+
+    return r;
+}
+
 
 
 /**

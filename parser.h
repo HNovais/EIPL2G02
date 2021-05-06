@@ -93,6 +93,7 @@ int convDouble(STACK *stack);
 int convCaracter(STACK *stack);
 int lerLinha(STACK *stack);
 int igual(STACK *stack);
+int igualStrings(STACK *stack);
 void range(STACK *stackPointer[], int *flag);
 int nao(STACK *stack);
 int menorDe2(STACK *stack);
