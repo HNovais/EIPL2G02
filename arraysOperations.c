@@ -292,7 +292,6 @@ void executaBloco(STACK *stackPointer[], int *flag, int *bloco, STACK *addressBl
  *
  * @param stackPointer : array de apontadores para a stack ou arrays criados
  * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
- * @param bloco : indicador de que possuímos um bloco (abertura de {)
  * @param addressBloco : stack onde vai ser guardado o bloco
  */
 void aplicaBloco(STACK *stackPointer[], int *flag, STACK *addressBloco)

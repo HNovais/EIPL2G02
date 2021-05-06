@@ -27,7 +27,7 @@ typedef struct {
         char  *vs;          /**< Contém o valor da variável caso esta seja do tipo string */
         struct stack *va;   /**< Contém o valor da variável caso esta seja do tipo array */
         struct stack *vb;   /**< Contém o valor da variável caso esta seja do tipo bloco */
-    } data;
+    } data;                 /**< Union que contém todos os tipos possíveis */
 } DADOS;
 
 /**
@@ -92,7 +92,6 @@ int convInteiro(STACK *stack);
 int convDouble(STACK *stack);
 int convCaracter(STACK *stack);
 int lerLinha(STACK *stack);
-int lerTudo(STACK *stack);
 int igual(STACK *stack);
 void range(STACK *stackPointer[], int *flag);
 int nao(STACK *stack);
