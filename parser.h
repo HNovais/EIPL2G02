@@ -110,8 +110,6 @@ int logicas(char *token, STACK *stack);
 int opStack(char *token, STACK *stack);
 int convertions(char *token, STACK *stack);
 int comparison(char *token, STACK *stack);
-
-
 void arrayToStack(STACK *stack, STACK *array);
 void size(STACK *stack, STACK *array);
 void indexArray(STACK *stack, STACK *array);
@@ -126,6 +124,8 @@ void concatenaArrArr(STACK *stackPointer[], int *flag);
 int checkInt(STACK *stack);
 int stringSize(STACK *stack);
 void executaBloco(STACK *stackPointer[], int *flag, int *bloco, STACK *adressBloco);
+void aplicaBloco(STACK *stackPointer[], int *flag, STACK *addressBloco);
+void foldBloco(STACK *stackPointer[], int *flag);
 
 //void aplicaBloco(STACK *stackPointer[], int *flag, STACK *adressBloco);
 //int spaces(STACK *stack);

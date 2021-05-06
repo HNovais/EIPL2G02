@@ -680,6 +680,7 @@ int convInteiro(STACK *stack)
     if(P.tipo == LONG) {PUSH(stack, P); r = 1;}
     if(P.tipo == DOUBLE) {PUSHL(stack, P.data.vd); r = 1;}
     if(P.tipo == CHAR) {PUSHL(stack, P.data.vc); r = 1;}
+    if(P.tipo == STRING) {PUSHL(stack, atol(P.data.vs)); r = 1;}
 
     return r;
 
@@ -699,7 +700,8 @@ int convDouble(STACK *stack)
     DADOS P = POP(stack);
 
     if(P.tipo == LONG) {PUSHD(stack, P.data.vl); r = 1;}
-    if(P.tipo == DOUBLE) {PUSH(stack, P); r = 1;}
+    if(P.tipo == DOUBLE) {;PUSH(stack, P); r = 1;}
+    if(P.tipo == STRING) {PUSHD(stack, atof(P.data.vs)); r = 1;}
 
     return r;
 }

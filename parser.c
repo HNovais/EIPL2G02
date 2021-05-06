@@ -140,7 +140,9 @@ void criarBloco(STACK *stackPointer[], int *flag, STACK *addressBloco)
 void blocoOperations (char *token, STACK *stackPointer[], int *flag, int *bloco, STACK *addressBloco)
 {
     if (strstr("~",token) != NULL) executaBloco(stackPointer, flag, bloco, addressBloco);
-    //if (strstr("%",token) != NULL) aplicaBloco(stackPointer, flag, addressBloco);
+    if (strstr("%",token) != NULL) aplicaBloco(stackPointer, flag, addressBloco);
+    if (strstr("*",token) != NULL) foldBloco(stackPointer, flag);
+
 }
 
 /**
@@ -212,23 +214,26 @@ void arrayOperations(char *token, STACK *stackPointer[], int *flag)
  */
 void criarString(char *token, STACK *stackPointer[], int *flag)
 {
-    int i, tam = strlen(token);
-    char *aux = malloc((tam+1) * sizeof(char));
-
-    for (i = 0; i < tam-1; i++)
+    for (unsigned int i = 0; i < strlen(token)-1; i++)
     {
-        token[i] = token[i+1];
         if (token[i] == '.') token[i] = ' ';
     }
 
-    for (i = 0; i < 2; i++)
+    for (unsigned int i = 0; i < strlen(token)-1; i++)
     {
-        token[tam-1]='\0';
-        token[tam-1]='\0';
+        token[i] = token[i+1];
     }
 
-    strcpy(aux,token);
-    PUSHS(stackPointer[*flag], aux);
+    for (int i=0; i<2; i++)
+    {
+        token[strlen(token)-1]='\0';
+    }
+
+    int tam = strlen(token);
+    char *p = malloc((tam+1) * sizeof(char));
+    strcpy(p,token);
+    PUSHS(stackPointer[*flag], p);
+
 }
 
 

@@ -229,11 +229,11 @@ void concatenaArrNum(STACK *stackPointer[], int *flag)
  */
 void concatenaArrArr(STACK *stackPointer[], int *flag)
 {
+    int x = somaTiposTop(stackPointer[*flag]);
     DADOS P = POP(stackPointer[*flag]);
     DADOS Z = POP(stackPointer[*flag]);
     STACK *arrayP = P.data.va;
-
-    if (somaTiposTop(stackPointer[*flag]) == 17 || somaTiposTop(stackPointer[*flag]) == 18)
+    if (x==17 || x == 18)
     {
         criarArray(stackPointer, flag);
         (*flag)--;
@@ -262,7 +262,7 @@ void concatenaArrArr(STACK *stackPointer[], int *flag)
 }
 
 /**
- * \brief Esta é a função auxiliar da parserBloco que concatena dois arrays ou um número e um array
+ * \brief Esta é a função auxiliar da parserBloco que executa um bloco
  *
  * @param stackPointer : array de apontadores para a stack ou arrays criados
  * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
@@ -287,4 +287,76 @@ void executaBloco(STACK *stackPointer[], int *flag, int *bloco, STACK *addressBl
     }
 }
 
+/**
+ * \brief Esta é a função auxiliar da parserBloco que aplica o bloco a todos os elementos de um array
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ * @param bloco : indicador de que possuímos um bloco (abertura de {)
+ * @param addressBloco : stack onde vai ser guardado o bloco
+ */
+void aplicaBloco(STACK *stackPointer[], int *flag, STACK *addressBloco)
+{
+    int x = addressBloco->count;
+    int k;
+
+    DADOS block = POP(stackPointer[*flag]);
+    STACK *bl = block.data.vb;
+    DADOS n;
+    DADOS array = POP(stackPointer[*flag]);
+    STACK *arr = array.data.va;
+
+    k = arr->count;
+
+    for (int i = 0; i < x; i++){
+        if (bl->comp[i].tipo == LONG)
+        {
+            n = bl->comp[i];
+        }
+        else {
+            criarArray(stackPointer, flag);
+            for (int j = 0; j < k; j++)
+            {
+                PUSH(stackPointer[*flag], arr->comp[j]);
+                PUSH(stackPointer[*flag], n);
+                PUSH(stackPointer[*flag], bl->comp[i]);
+                char *t = POPS(stackPointer[*flag]);
+                parserOperations(t, stackPointer[*flag]);
+            }
+        }
+    }
+}
+
+/**
+ * \brief Esta é a função auxiliar da parserBloco que faz o fold sobre um array ou string usando o bloco
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ * @param bloco : indicador de que possuímos um bloco (abertura de {)
+ * @param addressBloco : stack onde vai ser guardado o bloco
+ */
+void foldBloco(STACK *stackPointer[], int *flag)
+{
+    DADOS block = POP(stackPointer[*flag]);
+    STACK *bl = block.data.vb;
+
+    DADOS array = POP(stackPointer[*flag]);
+    STACK *arr = array.data.va;
+    int k = arr->count;
+
+    for (int i = 0; i < k; i++){
+        if (i == 0) {
+            PUSH(stackPointer[*flag], arr->comp[i]);
+            PUSH(stackPointer[*flag], arr->comp[i + 1]);
+            PUSH(stackPointer[*flag], bl->comp[0]);
+            char *t = POPS(stackPointer[*flag]);
+            parserOperations(t, stackPointer[*flag]);
+        } else {
+            PUSH(stackPointer[*flag], arr->comp[i + 1]);
+            PUSH(stackPointer[*flag], bl->comp[0]);
+            char *t = POPS(stackPointer[*flag]);
+            parserOperations(t, stackPointer[*flag]);
+        }
+    }
+}
 
