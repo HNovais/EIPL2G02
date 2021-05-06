@@ -140,7 +140,17 @@ int soma (STACK *stack)
             PUSHD(stack, Z.data.vd + P.data.vd);
         }
     }
-    else if (somaTiposTop(stack) == 16)
+    else r = concatenarStrings(stack);
+
+    return r;
+}
+
+int concatenarStrings(STACK *stack)
+{
+    int r = 0;
+    DADOS P, Z;
+
+    if (somaTiposTop(stack) == 16)
     {
         P.data.vs = POPS(stack);
         Z.data.vs = POPS(stack);
@@ -189,7 +199,6 @@ int soma (STACK *stack)
             r=1;
         }
     }
-
     return r;
 }
 

@@ -70,6 +70,7 @@ int somaTiposTop(STACK *stack);
 int areNumbers(STACK *stack);
 void realocarM (STACK *stack);
 int soma(STACK *stack);
+int concatenarStrings(STACK *stack);
 int subtracao(STACK *stack);
 int multiplicacao(STACK *stack);
 int replicateString(STACK *stack);
