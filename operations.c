@@ -389,7 +389,7 @@ int restoDivInt(STACK *stack)
 }
 
 /**
- * \brief Esta é a função auxiliar que faz a exponenciação de dois elementos da stack e procura uma substring numa string
+ * \brief Esta é a função auxiliar que faz a exponenciação de dois elementos da stack
  *
  * @param stack : stack
  *
@@ -398,26 +398,47 @@ int restoDivInt(STACK *stack)
 int exponenciacao(STACK *stack)
 {
     int r = areNumbers(stack);
+    int x = somaTiposTop(stack);
 
     DADOS P, Z;
 
-    if(r == 1)
+    if (r == 1)
     {
-
-        if ((somaTiposTop(stack)) == 2) {
+        if (x == 2)
+        {
             P.data.vl = POPL(stack);
             Z.data.vl = POPL(stack);
             PUSHL(stack, pow(Z.data.vl, P.data.vl));
-        } else {
+        }
+        else
+        {
             P.data.vd = POPD(stack);
             Z.data.vd = POPD(stack);
             PUSHD(stack, pow(Z.data.vd, P.data.vd));
         }
     }
-    else if (somaTiposTop(stack)==16)
+    else r = searchSubstring(stack);
+
+    return r;
+}
+
+/**
+ * \brief Esta é a função auxiliar que faz a procura de uma substring numa string
+ *
+ * @param stack : stack
+ *
+ * @return Se a operação for bem sucessida retorna 1, caso contrário retorna 0
+ */
+int searchSubstring(STACK *stack)
+{
+    int r;
+    int x = somaTiposTop(stack);
+
+    DADOS P = POP(stack);
+    DADOS Z = POP(stack);
+
+    if (x == 16)
     {
-        P = POP(stack);
-        Z = POP(stack);
         long pos;
         char *s = strstr(Z.data.vs, P.data.vs);
 
@@ -427,6 +448,7 @@ int exponenciacao(STACK *stack)
             PUSHL(stack, pos);
         }
         else PUSHL(stack, -1);
+        r = 1;
     }
 
     return r;
@@ -896,7 +918,15 @@ int igual(STACK *stack)
         ((Z.data.vd) == (P.data.vd)) ? PUSHL(stack, 1) : PUSHL(stack, 0);
         r = 1;
     }
-    else r = igualStrings(stack);
+    else if (somaTiposTop(stack) == 16)
+    {
+        P = POP(stack);
+        Z = POP(stack);
+        int result = strcmp(P.data.vs, Z.data.vs);
+        (result == 0) ? PUSHL(stack, 1) : PUSHL(stack, 0);
+        r = 1;
+    }
+    else r = indexStrings(stack);
 
     return r;
 }
@@ -908,23 +938,13 @@ int igual(STACK *stack)
  *
  * @return Se a operação for bem sucessida retorna 1, caso contrário retorna 0
  */
-int igualStrings(STACK *stack)
+int indexStrings (STACK *stack)
 {
-    int r = 0;
+    int r;
 
-    DADOS P, Z;
-
-    if (somaTiposTop(stack) == 16)
+    if (somaTiposTop(stack) == 9)
     {
-        P = POP(stack);
-        Z = POP(stack);
-        int result = strcmp(P.data.vs, Z.data.vs);
-        (result == 0) ? PUSHL(stack, 1) : PUSHL(stack, 0);
-        r = 1;
-    }
-    else if (somaTiposTop(stack) == 9)
-    {
-        P.data.vl = POPL(stack);
+        DADOS P = POP(stack);
         DADOS Z = POP(stack);
         PUSHC(stack, Z.data.vs[P.data.vl]);
         r = 1;
@@ -933,8 +953,6 @@ int igualStrings(STACK *stack)
 
     return r;
 }
-
-
 
 /**
  * \brief Esta é a função auxiliar que coloca na stack o contrário do seu valor lógico
