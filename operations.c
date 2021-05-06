@@ -165,57 +165,85 @@ int soma (STACK *stack)
 int concatenarStrings(STACK *stack)
 {
     int r = 0;
+
+    if (somaTiposTop(stack) == 16) r = concatena2Strings(stack);
+    else if (somaTiposTop(stack) == 12) r = concatenaCharString(stack);
+
+    return r;
+}
+
+/**
+ * \brief Esta é a função auxiliar que permite a concatenação de duas strings
+ *
+ * @param stack : stack
+ *
+ * @return Se a operação for bem sucessida retorna 1, caso contrário retorna 0
+ */
+int concatena2Strings(STACK *stack)
+{
+    int r=0;
     DADOS P, Z;
 
-    if (somaTiposTop(stack) == 16)
+    P.data.vs = POPS(stack);
+    Z.data.vs = POPS(stack);
+    char *s = calloc(strlen(P.data.vs)+strlen(Z.data.vs)+1, sizeof(char));
+    unsigned int i;
+
+    for (i=0; i<strlen(Z.data.vs); i++)
     {
-        P.data.vs = POPS(stack);
-        Z.data.vs = POPS(stack);
-        char *s = calloc(strlen(P.data.vs)+strlen(Z.data.vs)+1, sizeof(char));
-        unsigned int i;
+        s[i] = Z.data.vs[i];
+    }
 
-        for (i=0; i<strlen(Z.data.vs); i++)
-        {
-            s[i] = Z.data.vs[i];
-        }
+    for (i=strlen(Z.data.vs); i < strlen(P.data.vs)+strlen(Z.data.vs); i++)
+    {
+        s[i] = P.data.vs[i-strlen(Z.data.vs)];
+    }
+    s[i] = '\0';
 
-        for (i=strlen(Z.data.vs); i < strlen(P.data.vs)+strlen(Z.data.vs); i++)
-        {
-            s[i] = P.data.vs[i-strlen(Z.data.vs)];
-        }
-        s[i] = '\0';
+    PUSHS(stack, s);
+    r=1;
 
-        PUSHS(stack, s);
+    return r;
+}
+
+/**
+ * \brief Esta é a função auxiliar que permite a concatenação de um caracter e uma string
+ *
+ * @param stack : stack
+ *
+ * @return Se a operação for bem sucessida retorna 1, caso contrário retorna 0
+ */
+int concatenaCharString(STACK *stack)
+{
+    int r=0;
+    DADOS P, Z;
+
+    P = POP(stack);
+    Z = POP(stack);
+
+    if (P.tipo == CHAR)
+    {
+        char *s = malloc (2*sizeof(char));
+        s[0] = P.data.vc;
+        s[1] = '\0';
+        Z.data.vs = realloc (Z.data.vs,5*sizeof(char));
+        strcat(Z.data.vs, s);
+        PUSHS(stack, Z.data.vs);
+        free(s);
         r=1;
     }
-    else if (somaTiposTop(stack) == 12)
+    else // char string
     {
-        P = POP(stack);
-        Z = POP(stack);
-
-        if (P.tipo == CHAR) // string char
-        {
-            char *s = malloc (2*sizeof(char));
-            s[0] = P.data.vc;
-            s[1] = '\0';
-            Z.data.vs = realloc (Z.data.vs,5*sizeof(char));
-            strcat(Z.data.vs, s);
-            PUSHS(stack, Z.data.vs);
-            free(s);
-            r=1;
-        }
-        else // char string
-        {
-            char *s = malloc (2*sizeof(char));
-            s[0] = Z.data.vc;
-            s[1] = '\0';
-            s = realloc (s, (strlen(P.data.vs)) * sizeof(char));
-            strncat(s, P.data.vs, strlen(P.data.vs));
-            PUSHS(stack, s);
-            free(P.data.vs);
-            r=1;
-        }
+        char *s = malloc (2*sizeof(char));
+        s[0] = Z.data.vc;
+        s[1] = '\0';
+        s = realloc (s, (strlen(P.data.vs)) * sizeof(char));
+        strncat(s, P.data.vs, strlen(P.data.vs));
+        PUSHS(stack, s);
+        free(P.data.vs);
+        r=1;
     }
+
     return r;
 }
 
