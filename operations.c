@@ -825,7 +825,17 @@ int menor(STACK *stack)
         else PUSHL(stack, 0);
         r=1;
     }
-    else if (somaTiposTop(stack) == 9)
+    else r = firstChars(stack);
+
+    return r;
+}
+
+int firstChars(STACK *stack)
+{
+    int r = 0;
+    DADOS P, Z;
+
+    if (somaTiposTop(stack) == 9)
     {
         P = POP(stack);
         Z = POP(stack);
@@ -889,7 +899,16 @@ int maior(STACK *stack)
         else PUSHL(stack, 0);
         r=1;
     }
-    else if (somaTiposTop(stack) == 9)
+    else r = lastChars(stack);
+    return r;
+}
+
+int lastChars(STACK *stack)
+{
+    int r = 0;
+    DADOS P, Z;
+
+    if (somaTiposTop(stack) == 9)
     {
         P = POP(stack);
         Z = POP(stack);
