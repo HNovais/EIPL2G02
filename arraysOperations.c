@@ -234,7 +234,7 @@ void lastElements(STACK *stackPointer[], int *flag)
 void concatenarArrays(STACK *stackPointer[], int *flag)
 {
     DADOS P = TOP(stackPointer[*flag]);
-    if (P.tipo == ARRAY) concatenaArrArr(stackPointer, flag);
+    if (P.tipo == ARRAY) concatenaResto(stackPointer, flag);
     else concatenaArrNum(stackPointer, flag);
 
 }
@@ -257,38 +257,41 @@ void concatenaArrNum(STACK *stackPointer[], int *flag)
  * @param stackPointer : array de apontadores para a stack ou arrays criados
  * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
  */
-void concatenaArrArr(STACK *stackPointer[], int *flag)
+void concatenaResto(STACK *stackPointer[], int *flag)
 {
     int x = somaTiposTop(stackPointer[*flag]);
     DADOS P = POP(stackPointer[*flag]);
     DADOS Z = POP(stackPointer[*flag]);
     STACK *arrayP = P.data.va;
-    if (x==17 || x == 18)
-    {
-        criarArray(stackPointer, flag);
-        (*flag)--;
-        PUSH(stackPointer[*flag+1], Z);
+    if (x==17 || x == 18) concatenaNumArr(arrayP, stackPointer, flag, Z);
+    else concatenaArrArr(arrayP, stackPointer, flag, Z);
+}
 
-        for (int i=0; i<arrayP->count; i++)
-        {
-            PUSH(stackPointer[*flag+1], arrayP->comp[i]);
-        }
-    }
-    else
-    {
-        criarArray(stackPointer, flag);
-        (*flag)--;
-        STACK *arrayZ = Z.data.va;
-        for (int i=0; i < arrayZ->count; i++)
-        {
-            PUSH(stackPointer[*flag+1], arrayZ->comp[i]);
-        }
-        for (int i=0; i<arrayP->count; i++)
-        {
-            PUSH(stackPointer[*flag+1], arrayP->comp[i]);
-        }
-    }
+void concatenaNumArr (STACK *array, STACK *stackPointer[], int *flag, DADOS P)
+{
+    criarArray(stackPointer, flag);
+    (*flag)--;
+    PUSH(stackPointer[*flag+1], P);
 
+    for (int i=0; i<array->count; i++)
+    {
+        PUSH(stackPointer[*flag+1], array->comp[i]);
+    }
+}
+
+void concatenaArrArr (STACK *array, STACK *stackPointer[], int *flag, DADOS P)
+{
+    criarArray(stackPointer, flag);
+    (*flag)--;
+    STACK *arrayP = P.data.va;
+    for (int i=0; i < arrayP->count; i++)
+    {
+        PUSH(stackPointer[*flag+1], arrayP->comp[i]);
+    }
+    for (int i=0; i<array->count; i++)
+    {
+        PUSH(stackPointer[*flag+1], array->comp[i]);
+    }
 }
 
 /**
