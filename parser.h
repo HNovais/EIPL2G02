@@ -120,7 +120,6 @@ void lastElements(STACK *stackPointer[], int *flag);
 void concatenarArrays(STACK *stackPointer[], int *flag);
 void concatenaArrNum(STACK *stackPointer[], int *flag);
 void concatenaArrArr(STACK *stackPointer[], int *flag);
-int checkInt(STACK *stack);
 int stringSize(STACK *stack);
 void executaBloco(STACK *stackPointer[], int *flag, int *bloco, STACK *adressBloco);
 void aplicaBloco(STACK *stackPointer[], int *flag, STACK *addressBloco);
