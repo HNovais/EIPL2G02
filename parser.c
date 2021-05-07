@@ -28,44 +28,49 @@ void parser(char *line)
 {
     int flag = 0;
     int bloco = 0;
+    STACK *stack = novaStack();
+    iniciarStack(stack);
+    STACK *addressBloco = novaStack();
     char *delims = " \t\n";
-    char *sobra;
 
     DADOS variaveis [26];
     atribuicao(variaveis);
 
-    STACK *stack = novaStack();
-    iniciarStack(stack);
-    STACK *addressBloco = novaStack();
-
-
-    STACK *stackPointer[100];
-    stackPointer[0] = stack;
-
     for (char *token = strtok(line, delims); token != NULL; token = strtok(NULL, delims))
     {
+        char *sobra;
+        long val_i = strtol(token, &sobra, 10);
+        STACK *stackPointer[100];
+
+        stackPointer[0] = stack;
 
         STACK *choose;
 
         if (bloco == 1) choose = addressBloco;
         else choose = stackPointer[flag];
 
-        long val_i = strtol(token, &sobra, 10);
-        if (strlen(sobra) == 0) PUSHL(choose, val_i);
+
+        if (strlen(sobra) == 0)
+        {
+            PUSHL(choose, val_i);
+        }
         else
         {
             double val_d = strtod(token, &sobra);
-            (strlen(sobra) == 0) ? PUSHD(choose, val_d):
-            (strlen(sobra) == 0) ? PUSHD(choose, val_d) :
-            (strstr("[]{}", token)                                                   != NULL)  ? parserAux        (token, stackPointer, &flag, &bloco, addressBloco):
-            ((choose->comp[choose->count-1].tipo == BLOCO)&&(strstr("~%,$|", token)  != NULL)) ? blocoOperations  (token, stackPointer, &flag, &bloco, addressBloco):
-            (strstr("+-*/()%#&|^~e&e|_;\\@$clifts<>=!?e<e>,/", token)                != NULL)  ? decideOperations (token, stackPointer, &flag, &bloco, addressBloco):
-            (strchr(token,34)                                                             != NULL)  ? criarString      (token, stackPointer, &flag):
-            (strcmp("/S",token)                                                              == 0)     ? decideOperations (token, stackPointer, &flag, &bloco, addressBloco):
-            (strcmp("/N",token)                                                              == 0)     ? decideOperations (token, stackPointer, &flag, &bloco, addressBloco):
-            (variableTeste(token)                                                            == 0)     ? variableOut      (stackPointer, token, variaveis, &flag):
-            (twoPointsTeste(token)                                                           == 0)     ? variableIn       (stackPointer, token, variaveis, &flag):
-            exit(0);
+            if (strlen(sobra) == 0)
+            {
+                PUSHD(choose, val_d);
+            }
+            else
+            {
+                ((choose->comp[choose->count-1].tipo == BLOCO)&&(strstr("~%,$|w", token)  != NULL)) ? blocoOperations(token, stackPointer, &flag, &bloco, addressBloco):
+                (strstr("[]{}", token)                                                    != NULL) ? parserAux(token, stackPointer, &flag, &bloco, addressBloco):
+                (strstr("+-*/()%#&|^~e&e|_;\\@$clifts<>=!?e<e>,", token)  != NULL) ? decideOperations(token, stackPointer, &flag, &bloco, addressBloco):
+                (strchr(token,34)                                        != NULL)  ? criarString(token, stackPointer, &flag):
+                (variableTeste(token)                                    ==0)      ? variableOut(stackPointer, token, variaveis, &flag):
+                (twoPointsTeste(token)                                   ==0)      ? variableIn (stackPointer, token, variaveis, &flag):
+                exit(0);
+            }
         }
     }
 
