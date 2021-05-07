@@ -351,7 +351,7 @@ void executaBloco(STACK *stackPointer[], int *flag, int *bloco, STACK *addressBl
 void aplicaBloco(STACK *stackPointer[], int *flag, STACK *addressBloco)
 {
     int x = addressBloco->count;
-    int k;
+    int k, a = -1;
 
     DADOS block = POP(stackPointer[*flag]);
     STACK *bl = block.data.vb;
@@ -361,23 +361,34 @@ void aplicaBloco(STACK *stackPointer[], int *flag, STACK *addressBloco)
 
     k = arr->count;
 
-    for (int i = 0; i < x; i++){
-        if (bl->comp[i].tipo == LONG)
-        {
+    for (int i = 0; i < x; i++) {
+        if (bl->comp[i].tipo == LONG) {
             n = bl->comp[i];
-        }
-        else {
-            criarArray(stackPointer, flag);
-            for (int j = 0; j < k; j++)
-            {
-                PUSH(stackPointer[*flag], arr->comp[j]);
-                PUSH(stackPointer[*flag], n);
-                PUSH(stackPointer[*flag], bl->comp[i]);
-                char *t = POPS(stackPointer[*flag]);
-                parserOperations(t, stackPointer[*flag]);
+            a = 0;
+        } else {
+            if (a == 0) {
+                criarArray(stackPointer, flag);
+                for (int j = 0; j < k; j++) {
+                    PUSH(stackPointer[*flag], arr->comp[j]);
+                    PUSH(stackPointer[*flag], n);
+                    PUSH(stackPointer[*flag], bl->comp[i]);
+                    char *t = POPS(stackPointer[*flag]);
+                    if (strcmp(t, "S") == 0) variableTeste(t);
+                    else parserOperations(t, stackPointer[*flag]);
+                }
+            } else {
+                criarArray(stackPointer, flag);
+                for (int j = 0; j < k; j++) {
+                    PUSH(stackPointer[*flag], arr->comp[j]);
+                    PUSH(stackPointer[*flag], bl->comp[i]);
+                    char *t = POPS(stackPointer[*flag]);
+                    if (strcmp(t, "S") == 0) variableTeste(t);
+                    else parserOperations(t, stackPointer[*flag]);
+                }
             }
         }
     }
+
 }
 
 /**
@@ -395,19 +406,23 @@ void foldBloco(STACK *stackPointer[], int *flag)
     STACK *arr = array.data.va;
     int k = arr->count;
 
-    for (int i = 0; i < k; i++){
-        if (i == 0) {
+    for (int i = 0; i < k; i++)
+    {
+        if (i == 0)
+        {
             PUSH(stackPointer[*flag], arr->comp[i]);
             PUSH(stackPointer[*flag], arr->comp[i + 1]);
             PUSH(stackPointer[*flag], bl->comp[0]);
             char *t = POPS(stackPointer[*flag]);
             parserOperations(t, stackPointer[*flag]);
-        } else {
+        } else
+        {
             PUSH(stackPointer[*flag], arr->comp[i + 1]);
             PUSH(stackPointer[*flag], bl->comp[0]);
             char *t = POPS(stackPointer[*flag]);
             parserOperations(t, stackPointer[*flag]);
         }
     }
+    POP(stackPointer[*flag]);
 }
 

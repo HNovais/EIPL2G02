@@ -36,6 +36,7 @@ void parser(char *line)
     DADOS variaveis [26];
     atribuicao(variaveis);
 
+
     for (char *token = strtok(line, delims); token != NULL; token = strtok(NULL, delims))
     {
         char *sobra;
@@ -48,7 +49,6 @@ void parser(char *line)
 
         if (bloco == 1) choose = addressBloco;
         else choose = stackPointer[flag];
-
 
         if (strlen(sobra) == 0)
         {
@@ -63,7 +63,7 @@ void parser(char *line)
             }
             else
             {
-                ((choose->comp[choose->count-1].tipo == BLOCO)&&(strstr("~%,$|w", token)  != NULL)) ? blocoOperations(token, stackPointer, &flag, &bloco, addressBloco):
+                ((choose->comp[choose->count-1].tipo == BLOCO)&&(strstr("~%,$|w*", token)  != NULL)) ? blocoOperations(token, stackPointer, &flag, &bloco, addressBloco):
                 (strstr("[]{}", token)                                                    != NULL) ? parserAux(token, stackPointer, &flag, &bloco, addressBloco):
                 (strstr("+-*/()%#&|^~e&e|_;\\@$clifts<>=!?e<e>,", token)  != NULL) ? decideOperations(token, stackPointer, &flag, &bloco, addressBloco):
                 (strchr(token,34)                                        != NULL)  ? criarString(token, stackPointer, &flag):
@@ -274,8 +274,8 @@ void PRINT_STACK(STACK *stack)
         PRINT_DADOS (stack->comp[i]);
     }
 
-    //printf("\n\nCOUNT : %d\n", stack->count);
-    //printf ("SIZE : %d\n", stack->size);
+    printf("\n\nCOUNT : %d\n", stack->count);
+    printf ("SIZE : %d\n", stack->size);
 }
 
 /**
