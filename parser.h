@@ -49,7 +49,6 @@ void decideOperations(char *token, STACK *stackPointer[], int *flag, int *bloco,
 int parserOperations(char *token, STACK *stack);
 void arrayOperations(char *token, STACK *stackPointer[], int *flag);
 void criarString(char *token, STACK *stackPointer[], int *flag);
-void string2Array(char *token, STACK *stackPointer[], int *flag);
 void atribuicao(DADOS *variaveis);
 void PRINT_STACK(STACK *stack);
 void PRINT_DADOS (DADOS P);
@@ -143,5 +142,6 @@ void aplicaBloco(STACK *stackPointer[], int *flag, STACK *addressBloco);
 void foldBloco(STACK *stackPointer[], int *flag);
 void filtraBloco(STACK *stackPointer[], int *flag);
 void spaces(STACK *stackPointer[], int *flag);
-//int newLine(STACK *stack);
+void stringArray(STACK *stackPointer[], int *flag);
+void newline(STACK *stackPointer[], int *flag);
 

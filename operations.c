@@ -134,8 +134,8 @@ int comparison(char *token, STACK *stack)
  */
 void stringOperations(char *token, STACK *stackPointer[], int *flag)
 {
-    if (strcmp(token,"S/") == 0)  spaces(stackPointer, flag);
-    //if(strcmp(token,"N/") == 0) newline(stackPointer, flag);
+    if(strcmp(token,"S/") == 0)  spaces(stackPointer, flag);
+    if(strcmp(token,"N/") == 0)  newline(stackPointer, flag);
     //if(strcmp(token,"/")  == 0) divideString(stackPointer, flag);
 }
 
@@ -874,6 +874,7 @@ int lerTudo(STACK *stack)
         if (s[0] == '\n') break;
         r=1;
     }
+    t[strlen(t)-1] = '\0';
 
     PUSHS(stack, t);
 
@@ -1244,10 +1245,11 @@ int stringSize(STACK *stack)
     if (P.tipo == STRING)
     {
         P = POP(stack);
-        unsigned long x = strlen(P.data.vs);
-        PUSHL(stack, x);
+        unsigned int tam = strlen(P.data.vs);
+        PUSHL(stack, tam);
         r = 1;
     }
+
     return r;
 }
 
@@ -1324,16 +1326,39 @@ void variableIn (STACK *stackPointer[], char *token, DADOS variaveis[26], int *f
 }
 
 
-
 void spaces(STACK *stackPointer[], int *flag)
 {
+    char *delim = " \n";
     DADOS P = POP(stackPointer[*flag]);
+    char *s = P.data.vs;
     criarArray(stackPointer, flag);
-    unsigned int i;
 
-    for (i=0; i < strlen(P.data.vs); i++)
+
+    for (char *t = strtok_r(s, delim, &s); t != NULL; t = strtok_r(s, delim, &s))
     {
-        if (P.data.vs[i] == '\n') P.data.vs[i] = ' ';
+        char *y = malloc((strlen(t)+1)*sizeof(char));
+        strcpy (y, t);
+        PUSHS(stackPointer[*flag], y);
     }
 
+    (*flag)--;
+}
+
+
+void newline(STACK *stackPointer[], int *flag)
+{
+    char *delim = "\n";
+    DADOS P = POP(stackPointer[*flag]);
+    char *s = P.data.vs;
+    criarArray(stackPointer, flag);
+
+
+    for (char *t = strtok_r(s, delim, &s); t != NULL; t = strtok_r(s, delim, &s))
+    {
+        char *y = malloc((strlen(t)+1)*sizeof(char));
+        strcpy (y, t);
+        PUSHS(stackPointer[*flag], y);
+    }
+
+    (*flag)--;
 }
