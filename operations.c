@@ -73,9 +73,7 @@ int opStack(char *token, STACK *stack)
     if(strcmp(token,"@")  == 0) r = rotateThree(stack);
     if(strcmp(token,"$")  == 0) r = copyN(stack);
     if(strcmp(token,",")  == 0) r = stringSize(stack);
-    //if(strcmp(token,"S/") == 0) r = spaces(stack);
-    //if(strcmp(token,"N/") == 0) r = newLine(stack);
-    //if(strcmp(token,"/")  == 0) r = separate(stack);
+
 
 
     return r;
@@ -124,6 +122,23 @@ int comparison(char *token, STACK *stack)
  
     return r;
 }
+
+/**
+ * \brief Esta é a função auxiliar da função separateString que trata os casos de separação de strings por espaços, novas linhas ou substrings
+ *
+ * @param token: sinal ou símbolo respetivo a cada operação
+ * @param stackPointer : sinal ou símbolo respetivo a cada operação
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ *
+ * @returns Se alguma das operações for bem sucessida retorna 1, caso contrário retorna 0
+ */
+void stringOperations(char *token, STACK *stackPointer[], int *flag)
+{
+    if (strcmp(token,"S/") == 0)  spaces(stackPointer, flag);
+    //if(strcmp(token,"N/") == 0) newline(stackPointer, flag);
+    //if(strcmp(token,"/")  == 0) divideString(stackPointer, flag);
+}
+
 
 /**
  * \brief Esta é a função auxiliar que permite a soma de dois elementos da stack
@@ -851,18 +866,13 @@ int lerLinha(STACK *stack)
 int lerTudo(STACK *stack)
 {
     int r=0;
-    char *s = malloc(100000*sizeof(char));
-    char *t = malloc(100000*sizeof(char));
+    char *s = malloc(10240*sizeof(char));
+    char *t = malloc(10240*sizeof(char));
     while (fgets(s, 10240, stdin))
     {
         strcat(t, s);
         if (s[0] == '\n') break;
         r=1;
-    }
-
-    for (int i=0; i < 2; i++)
-    {
-        t[strlen(t)-1] = '\0';
     }
 
     PUSHS(stack, t);
@@ -1311,4 +1321,19 @@ void variableIn (STACK *stackPointer[], char *token, DADOS variaveis[26], int *f
     DADOS P = TOP(stackPointer[*flag]);
 
     variaveis[k-65] = P;
+}
+
+
+
+void spaces(STACK *stackPointer[], int *flag)
+{
+    DADOS P = POP(stackPointer[*flag]);
+    criarArray(stackPointer, flag);
+    unsigned int i;
+
+    for (i=0; i < strlen(P.data.vs); i++)
+    {
+        if (P.data.vs[i] == '\n') P.data.vs[i] = ' ';
+    }
+
 }

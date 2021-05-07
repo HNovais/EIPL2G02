@@ -49,6 +49,7 @@ void decideOperations(char *token, STACK *stackPointer[], int *flag, int *bloco,
 int parserOperations(char *token, STACK *stack);
 void arrayOperations(char *token, STACK *stackPointer[], int *flag);
 void criarString(char *token, STACK *stackPointer[], int *flag);
+void string2Array(char *token, STACK *stackPointer[], int *flag);
 void atribuicao(DADOS *variaveis);
 void PRINT_STACK(STACK *stack);
 void PRINT_DADOS (DADOS P);
@@ -120,6 +121,7 @@ int logicas(char *token, STACK *stack);
 int opStack(char *token, STACK *stack);
 int convertions(char *token, STACK *stack);
 int comparison(char *token, STACK *stack);
+void stringOperations(char *token, STACK *stackPointer[], int *flag);
 void aritArrayOperations (char *token, STACK *stackPointer[], int *flag);
 void elemArrayOperations (char *token, STACK *stackPointer[], int *flag);
 void arrayToStack(STACK *stack, STACK *array);
@@ -140,6 +142,6 @@ void executaBloco(STACK *stackPointer[], int *flag, int *bloco, STACK *adressBlo
 void aplicaBloco(STACK *stackPointer[], int *flag, STACK *addressBloco);
 void foldBloco(STACK *stackPointer[], int *flag);
 void filtraBloco(STACK *stackPointer[], int *flag);
-//int spaces(STACK *stack);
+void spaces(STACK *stackPointer[], int *flag);
 //int newLine(STACK *stack);
 

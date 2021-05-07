@@ -64,11 +64,12 @@ void parser(char *line)
             else
             {
                 ((choose->comp[choose->count-1].tipo == BLOCO)&&(strstr("~%,$|w*", token)  != NULL)) ? blocoOperations(token, stackPointer, &flag, &bloco, addressBloco):
-                (strstr("[]{}", token)                                                    != NULL) ? parserAux(token, stackPointer, &flag, &bloco, addressBloco):
-                (strstr("+-*/()%#&|^~e&e|_;\\@$clifts<>=!?e<e>,", token)  != NULL) ? decideOperations(token, stackPointer, &flag, &bloco, addressBloco):
-                (strchr(token,34)                                        != NULL)  ? criarString(token, stackPointer, &flag):
-                (variableTeste(token)                                    ==0)      ? variableOut(stackPointer, token, variaveis, &flag):
-                (twoPointsTeste(token)                                   ==0)      ? variableIn (stackPointer, token, variaveis, &flag):
+                (strstr("[]{}", token)                                                     != NULL)  ? parserAux(token, stackPointer, &flag, &bloco, addressBloco):
+                (strstr("+-*/()%#&|^~e&e|_;\\@$clifts<>=!?e<e>,", token)                   != NULL)  ? decideOperations(token, stackPointer, &flag, &bloco, addressBloco):
+                (strchr(token,34)                                                               != NULL)  ? criarString(token, stackPointer, &flag):
+                (strstr("S/N/", token)                                                     != NULL)  ? string2Array(token, stackPointer, &flag):
+                (variableTeste(token)                                                              == 0)     ? variableOut(stackPointer, token, variaveis, &flag):
+                (twoPointsTeste(token)                                                             == 0)     ? variableIn (stackPointer, token, variaveis, &flag):
                 exit(0);
             }
         }
@@ -203,7 +204,7 @@ void arrayOperations(char *token, STACK *stackPointer[], int *flag)
 {
     if(strstr("~=,*", token) != NULL) aritArrayOperations (token, stackPointer, flag);
     if(strstr("<>()", token) != NULL) elemArrayOperations (token, stackPointer, flag);
-    if (strcmp(token,"+") == 0) concatenarArrays(stackPointer, flag);
+    if(strcmp(token,"+")              == 0) concatenarArrays(stackPointer, flag);
 }
 
 /**
@@ -237,6 +238,18 @@ void criarString(char *token, STACK *stackPointer[], int *flag)
 
 }
 
+/**
+ * \brief Esta é a função auxiliar ao parser que cria uma string na stack
+ *
+ * @param token : símbolo ou letra da string
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
+void string2Array(char *token, STACK *stackPointer[], int *flag)
+{
+    int r = parserOperations (token, stackPointer[*flag]);
+    if (r==0) stringOperations(token, stackPointer, flag);
+}
 
 /**
  * \brief Esta é a função que atribui os valores por omissão às diferentes variáveis
