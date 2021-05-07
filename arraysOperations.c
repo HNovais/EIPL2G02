@@ -388,6 +388,7 @@ void aplicaBloco(STACK *stackPointer[], int *flag, STACK *addressBloco)
             }
         }
     }
+    (*flag)--;
 
 }
 
@@ -402,14 +403,17 @@ void foldBloco(STACK *stackPointer[], int *flag)
     DADOS block = POP(stackPointer[*flag]);
     STACK *bl = block.data.vb;
 
+
     DADOS array = POP(stackPointer[*flag]);
     STACK *arr = array.data.va;
     int k = arr->count;
+
 
     for (int i = 0; i < k; i++)
     {
         if (i == 0)
         {
+
             PUSH(stackPointer[*flag], arr->comp[i]);
             PUSH(stackPointer[*flag], arr->comp[i + 1]);
             PUSH(stackPointer[*flag], bl->comp[0]);
@@ -426,3 +430,32 @@ void foldBloco(STACK *stackPointer[], int *flag)
     POP(stackPointer[*flag]);
 }
 
+/**
+ * \brief Esta é a função auxiliar da parserBloco que filtra o bloco
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
+void filtraBloco(STACK *stackPointer[], int *flag)
+{
+    DADOS block = POP(stackPointer[*flag]);
+    STACK *bl = block.data.vb;
+    DADOS array = POP(stackPointer[*flag]);
+    STACK *a = array.data.va;
+    int x = a->count;
+    int k = 1;
+
+    //printf("count do bloco :%d", bl->count);
+    if ((bl->count > 2) && (strstr("!",bl->comp[2].data.vs) != NULL)) k = 0;
+
+    criarArray(stackPointer, flag);
+    (*flag)--;
+
+    for (int i = 0; i < x; i++)
+    {
+        if ((a->comp[i].data.vl % bl->comp[0].data.vl) == k) PUSH(stackPointer[*flag+1], a->comp[i]);
+    }
+
+    free(bl);
+    free(a);
+}

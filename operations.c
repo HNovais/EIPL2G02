@@ -851,8 +851,8 @@ int lerLinha(STACK *stack)
 int lerTudo(STACK *stack)
 {
     int r=0;
-    char *s = malloc(10240*sizeof(char));
-    char *t = malloc(10240*sizeof(char));
+    char *s = malloc(100000*sizeof(char));
+    char *t = malloc(100000*sizeof(char));
     while (fgets(s, 10240, stdin))
     {
         strcat(t, s);

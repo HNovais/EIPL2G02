@@ -149,7 +149,7 @@ void blocoOperations (char *token, STACK *stackPointer[], int *flag, int *bloco,
     if (strstr("~",token) != NULL) executaBloco(stackPointer, flag, bloco, addressBloco);
     if (strstr("%",token) != NULL) aplicaBloco(stackPointer, flag, addressBloco);
     if (strstr("*",token) != NULL) foldBloco(stackPointer, flag);
-
+    if (strstr(",",token) != NULL) filtraBloco(stackPointer, flag);
 }
 
 /**
