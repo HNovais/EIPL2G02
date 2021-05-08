@@ -9,31 +9,32 @@
 #include <math.h>
 
 /**
- * \brief Esta é a função auxiliar da função parserOperacoes que trata os casos relacionados com operações aritméticas
+ * \brief Esta é a função auxiliar da função parserOperations que trata os casos relacionados com operações aritméticas
  *
- * @param stack: stack
+ * @param stackPointer: array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
  * @param token: token
  *
  * @returns Se alguma das operações for bem sucessida retorna 1, caso contrário retorna 0
  */
-int aritmeticas(char *token, STACK *stack)
+int aritmeticas(char *token, STACK *stackPointer[], int *flag)
 {
     int r=0;
 
-    if(strcmp(token,"+") == 0) r = soma(stack);
-    if(strcmp(token,"-") == 0) r = subtracao(stack);
-    if(strcmp(token,"*") == 0) r = multiplicacao(stack);
-    if(strcmp(token,"/") == 0) r = divisao(stack);
-    if(strcmp(token,")") == 0) r = incrementar(stack);
-    if(strcmp(token,"(") == 0) r = decrementar(stack);
-    if(strcmp(token,"%") == 0) r = restoDivInt(stack);
-    if(strcmp(token,"#") == 0) r = exponenciacao(stack);
+    if(strcmp(token,"+") == 0) r = soma(stackPointer[*flag]);
+    if(strcmp(token,"-") == 0) r = subtracao(stackPointer[*flag]);
+    if(strcmp(token,"*") == 0) r = multiplicacao(stackPointer[*flag]);
+    if(strcmp(token,"/") == 0) r = divisao(stackPointer, flag);
+    if(strcmp(token,")") == 0) r = incrementar(stackPointer[*flag]);
+    if(strcmp(token,"(") == 0) r = decrementar(stackPointer[*flag]);
+    if(strcmp(token,"%") == 0) r = restoDivInt(stackPointer[*flag]);
+    if(strcmp(token,"#") == 0) r = exponenciacao(stackPointer[*flag]);
 
     return r;
 }
 
 /**
- * \brief Esta é a função auxiliar da função parserOperacoes que trata os casos relacionados com operações lógicas
+ * \brief Esta é a função auxiliar da função parserOperations que trata os casos relacionados com operações lógicas
  *
  * @param stack: stack
  * @param token: token
@@ -55,7 +56,7 @@ int logicas(char *token, STACK *stack)
 }
 
 /**
- * \brief Esta é a função auxiliar da função parserOperacoes que trata os casos relacionados com operações da stack
+ * \brief Esta é a função auxiliar da função parserOperations que trata os casos relacionados com operações da stack
  *
  * @param stack: stack
  * @param token: token
@@ -74,13 +75,11 @@ int opStack(char *token, STACK *stack)
     if(strcmp(token,"$")  == 0) r = copyN(stack);
     if(strcmp(token,",")  == 0) r = stringSize(stack);
 
-
-
     return r;
 }
 
 /**
- * \brief Esta é a função auxiliar da função parserOperacoes que trata os casos relacionados com conversões entre tipos
+ * \brief Esta é a função auxiliar da função parserOperations que trata os casos relacionados com conversões entre tipos
  *
  * @param stack: stack
  * @param token: token
@@ -101,7 +100,7 @@ int convertions(char *token, STACK *stack)
 }
 
 /**
- * \brief Esta é a função auxiliar da função parserOperacoes que trata os casos relacionados com comparações de elementos da stack
+ * \brief Esta é a função auxiliar da função parserOperations que trata os casos relacionados com comparações de elementos da stack
  *
  * @param stack: stack
  * @param token: token
@@ -136,7 +135,7 @@ void stringOperations(char *token, STACK *stackPointer[], int *flag)
 {
     if(strcmp(token,"S/") == 0)  spaces(stackPointer, flag);
     if(strcmp(token,"N/") == 0)  newline(stackPointer, flag);
-    //if(strcmp(token,"/")  == 0) divideString(stackPointer, flag);
+    if(strcmp(token,"/")  == 0) divideString(stackPointer, flag);
 }
 
 
@@ -361,31 +360,33 @@ int replicateString(STACK *stack)
 /**
  * \brief Esta é a função auxiliar que permite a divisão de dois elementos da stack
  *
- * @param stack : stack
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
  *
  * @return Se a operação for bem sucessida retorna 1, caso contrário retorna 0
  */
-int divisao (STACK *stack)
+int divisao (STACK *stackPointer[], int *flag)
 {
-    int r = areNumbers(stack);
+    int r = areNumbers(stackPointer[*flag]);
 
     DADOS P, Z;
 
     if(r == 1)
     {
-        if ((somaTiposTop(stack)) == 2)
+        if ((somaTiposTop(stackPointer[*flag])) == 2)
         {
-            P.data.vl = POPL(stack);
-            Z.data.vl = POPL(stack);
-            PUSHL (stack, Z.data.vl/P.data.vl);
+            P.data.vl = POPL(stackPointer[*flag]);
+            Z.data.vl = POPL(stackPointer[*flag]);
+            PUSHL (stackPointer[*flag], Z.data.vl/P.data.vl);
         }
         else
         {
-            P.data.vd = POPD(stack);
-            Z.data.vd = POPD(stack);
-            PUSHD(stack, Z.data.vd/P.data.vd);
+            P.data.vd = POPD(stackPointer[*flag]);
+            Z.data.vd = POPD(stackPointer[*flag]);
+            PUSHD(stackPointer[*flag], Z.data.vd/P.data.vd);
         }
     }
+    else r = divideString(stackPointer, flag);
 
     return r;
 }
@@ -872,9 +873,8 @@ int lerTudo(STACK *stack)
     {
         strcat(t, s);
         if (s[0] == '\n') break;
-        r=1;
+        r = 1;
     }
-    t[strlen(t)-1] = '\0';
 
     PUSHS(stack, t);
 
@@ -1244,9 +1244,8 @@ int stringSize(STACK *stack)
     DADOS P = TOP(stack);
     if (P.tipo == STRING)
     {
-        P = POP(stack);
-        unsigned int tam = strlen(P.data.vs);
-        PUSHL(stack, tam);
+        DADOS P = POP(stack);
+        PUSHL(stack, strlen(P.data.vs));
         r = 1;
     }
 
@@ -1299,22 +1298,24 @@ int twoPointsTeste (char *token)
  * @param variaveis : variáveis passíveis de serem colocadas (alfabeto maiúsculo)
  * @param stack : stack
  */
-void variableOut (STACK *stackPointer[], char *token, DADOS variaveis[26], int *flag)
+void variableOut (STACK *stackPointer[], char *token, DADOS variaveis[26], int *flag, int *bloco, STACK *addressBloco)
 {
     char k;
     k = token[0];
     DADOS P;
     int i = k - 65;
     P = variaveis[i];
-    PUSH(stackPointer[*flag], P);
+    ((*bloco) == 1) ? PUSH(addressBloco, P) : PUSH(stackPointer[*flag], P);
 }
 
 /**
  * \brief Esta é a função auxiliar que verifica o elemento do topo da stack e o guarda na variável pretendida
  *
- * @param t : string com o token
+ * @param token : string com o token
  * @param variaveis : variáveis passíveis de serem colocadas (alfabeto maiúsculo)
- * @param stack : stack
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ *
  */
 void variableIn (STACK *stackPointer[], char *token, DADOS variaveis[26], int *flag)
 {
@@ -1325,7 +1326,12 @@ void variableIn (STACK *stackPointer[], char *token, DADOS variaveis[26], int *f
     variaveis[k-65] = P;
 }
 
-
+/**
+ * \brief Esta é a função auxiliar que coloca os espaços numa string e a converte num array com vários elementos
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag :  indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
 void spaces(STACK *stackPointer[], int *flag)
 {
     char *delim = " \n";
@@ -1344,7 +1350,12 @@ void spaces(STACK *stackPointer[], int *flag)
     (*flag)--;
 }
 
-
+/**
+ * \brief Esta é a função auxiliar que coloca novas linhas numa string e a converte num array com vários elementos
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag :  indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
 void newline(STACK *stackPointer[], int *flag)
 {
     char *delim = "\n";
@@ -1361,4 +1372,37 @@ void newline(STACK *stackPointer[], int *flag)
     }
 
     (*flag)--;
+}
+
+/**
+ * \brief Esta é a função auxiliar que divide uma string por uma substring colocando os restantes elementos num array
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag :  indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ *
+ * @returns Se a operação for bem sucessida retorna 1, caso contrário retorna 0
+ */
+int divideString(STACK *stackPointer[], int *flag)
+{
+    int r = 0;
+
+    DADOS P = POP(stackPointer[*flag]);
+    char *delim = P.data.vs;
+    DADOS Z = POP(stackPointer[*flag]);
+    char *s = Z.data.vs;
+
+    criarArray(stackPointer, flag);
+
+    for (char *t = strtok_r(s, delim, &s); t != NULL; t = strtok_r(s, delim, &s))
+    {
+        char *y = malloc((strlen(t)-strlen(P.data.vs)-1)*sizeof(char));
+        strcpy (y, t);
+        PUSHS(stackPointer[*flag], y);
+        r = 1;
+    }
+
+    (*flag)--;
+
+    return r;
+
 }

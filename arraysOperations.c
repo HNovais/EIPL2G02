@@ -356,39 +356,25 @@ void aplicaBloco(STACK *stackPointer[], int *flag, STACK *addressBloco)
     DADOS block = POP(stackPointer[*flag]);
     STACK *bl = block.data.vb;
     DADOS n;
-    DADOS array = POP(stackPointer[*flag]);
-    STACK *arr = array.data.va;
-
-    k = arr->count;
-
     for (int i = 0; i < x; i++) {
         if (bl->comp[i].tipo == LONG) {
             n = bl->comp[i];
             a = 0;
         } else {
-            if (a == 0) {
-                criarArray(stackPointer, flag);
-                for (int j = 0; j < k; j++) {
-                    PUSH(stackPointer[*flag], arr->comp[j]);
-                    PUSH(stackPointer[*flag], n);
-                    PUSH(stackPointer[*flag], bl->comp[i]);
-                    char *t = POPS(stackPointer[*flag]);
-                    if (strcmp(t, "S") == 0) variableTeste(t);
-                    else parserOperations(t, stackPointer[*flag]);
-                }
-            } else {
-                criarArray(stackPointer, flag);
-                for (int j = 0; j < k; j++) {
-                    PUSH(stackPointer[*flag], arr->comp[j]);
-                    PUSH(stackPointer[*flag], bl->comp[i]);
-                    char *t = POPS(stackPointer[*flag]);
-                    if (strcmp(t, "S") == 0) variableTeste(t);
-                    else parserOperations(t, stackPointer[*flag]);
-                }
+            DADOS array = POP(stackPointer[*flag]);
+            STACK *arr = array.data.va;
+            k = arr->count;
+            criarArray(stackPointer, flag);
+            for (int j = 0; j < k; j++) {
+                PUSH(stackPointer[*flag], arr->comp[j]);
+                if (a == 0) PUSH(stackPointer[*flag], n);
+                if ((bl->comp[i].data.vc) == ' ') PUSHC(stackPointer[*flag],' ');
+                else parserOperations(bl->comp[i].data.vs, stackPointer, flag);
             }
+            (*flag)--;
+            a = -1;
         }
     }
-    (*flag)--;
 
 }
 
@@ -403,31 +389,25 @@ void foldBloco(STACK *stackPointer[], int *flag)
     DADOS block = POP(stackPointer[*flag]);
     STACK *bl = block.data.vb;
 
-
     DADOS array = POP(stackPointer[*flag]);
     STACK *arr = array.data.va;
     int k = arr->count;
 
+    char *operador = bl->comp[0].data.vs;
 
     for (int i = 0; i < k; i++)
     {
         if (i == 0)
         {
-
             PUSH(stackPointer[*flag], arr->comp[i]);
-            PUSH(stackPointer[*flag], arr->comp[i + 1]);
-            PUSH(stackPointer[*flag], bl->comp[0]);
-            char *t = POPS(stackPointer[*flag]);
-            parserOperations(t, stackPointer[*flag]);
+            PUSH(stackPointer[*flag], arr->comp[++i]);
+            parserOperations(operador, stackPointer, flag);
         } else
         {
-            PUSH(stackPointer[*flag], arr->comp[i + 1]);
-            PUSH(stackPointer[*flag], bl->comp[0]);
-            char *t = POPS(stackPointer[*flag]);
-            parserOperations(t, stackPointer[*flag]);
+            PUSH(stackPointer[*flag], arr->comp[i]);
+            parserOperations(operador, stackPointer, flag);
         }
     }
-    POP(stackPointer[*flag]);
 }
 
 /**

@@ -36,20 +36,20 @@ void parser(char *line)
     DADOS variaveis [26];
     atribuicao(variaveis);
 
+    STACK *stackPointer[100];
+    stackPointer[0] = stack;
+
 
     for (char *token = strtok(line, delims); token != NULL; token = strtok(NULL, delims))
     {
         char *sobra;
-        long val_i = strtol(token, &sobra, 10);
-        STACK *stackPointer[100];
-
-        stackPointer[0] = stack;
 
         STACK *choose;
-
         if (bloco == 1) choose = addressBloco;
         else choose = stackPointer[flag];
 
+
+        long val_i = strtol(token, &sobra, 10);
         if (strlen(sobra) == 0)
         {
             PUSHL(choose, val_i);
@@ -69,7 +69,7 @@ void parser(char *line)
                 (strchr(token,34)                                                               != NULL)  ? criarString(token, stackPointer, &flag):
                 (strcmp(token, "S/")                                                               == 0)     ? stringOperations(token, stackPointer, &flag):
                 (strcmp(token, "N/")                                                               == 0)     ? stringOperations(token, stackPointer, &flag):
-                (variableTeste(token)                                                              == 0)     ? variableOut(stackPointer, token, variaveis, &flag):
+                (variableTeste(token)                                                              == 0)     ? variableOut(stackPointer, token, variaveis, &flag, &bloco, addressBloco):
                 (twoPointsTeste(token)                                                             == 0)     ? variableIn (stackPointer, token, variaveis, &flag):
                 exit(0);
             }
@@ -130,6 +130,7 @@ void iniciarStack(STACK *stack)
  *
  * @param stackPointer : array de apontadores para a stack ou arrays criados
  * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ * @param addressBloco : stack onde é guardado o bloco
  */
 void criarBloco(STACK *stackPointer[], int *flag, STACK *addressBloco)
 {
@@ -168,8 +169,8 @@ void decideOperations(char *token, STACK *stackPointer[], int *flag, int *bloco,
     if (*bloco == 1) PUSHS(addressBloco, token);
     else
     {
-        int r = parserOperations (token,stackPointer[*flag]);
-        if (r==0) arrayOperations(token,stackPointer, flag);
+        int r = parserOperations (token,stackPointer, flag);
+        if (r==0) arrayOperations(token, stackPointer, flag);
     }
 }
 
@@ -181,15 +182,15 @@ void decideOperations(char *token, STACK *stackPointer[], int *flag, int *bloco,
  *
  * @return valor que permite saber se as operações foram realizadas corretamente
  */
-int parserOperations(char *token, STACK *stack)
+int parserOperations(char *token, STACK *stackPointer[], int *flag)
 {
     int r = 0;
 
-    if (strstr("+-*/()%#"   ,token)  != NULL) (r = aritmeticas(token,stack));
-    if (strstr("&|^~e&e|"   ,token)  != NULL) (r = logicas    (token,stack));
-    if (strstr("_;\\@$,S/N/",token)  != NULL) (r = opStack    (token,stack));
-    if (strstr("clifst"     ,token)  != NULL) (r = convertions(token,stack));
-    if (strstr("<>=!?e<e>"  ,token)  != NULL) (r = comparison (token,stack));
+    if (strstr("+-*/()%#"   ,token)  != NULL) (r = aritmeticas(token,stackPointer, flag));
+    if (strstr("&|^~e&e|"   ,token)  != NULL) (r = logicas    (token,stackPointer[*flag]));
+    if (strstr("_;\\@$,S/N/",token)  != NULL) (r = opStack    (token,stackPointer[*flag]));
+    if (strstr("clifst"     ,token)  != NULL) (r = convertions(token,stackPointer[*flag]));
+    if (strstr("<>=!?e<e>"  ,token)  != NULL) (r = comparison (token,stackPointer[*flag]));
 
     return r;
 }
@@ -205,7 +206,7 @@ void arrayOperations(char *token, STACK *stackPointer[], int *flag)
 {
     if(strstr("~=,*", token) != NULL) aritArrayOperations (token, stackPointer, flag);
     if(strstr("<>()", token) != NULL) elemArrayOperations (token, stackPointer, flag);
-    if(strcmp(token,"+")              == 0) concatenarArrays(stackPointer, flag);
+    if(strcmp(token,"+")             == 0) concatenarArrays(stackPointer, flag);
 }
 
 /**
@@ -275,8 +276,8 @@ void PRINT_STACK(STACK *stack)
         PRINT_DADOS (stack->comp[i]);
     }
 
-    printf("\n\nCOUNT : %d\n", stack->count);
-    printf ("SIZE : %d\n", stack->size);
+    //printf("\n\nCOUNT : %d\n", stack->count);
+    //printf ("SIZE : %d\n", stack->size);
 }
 
 /**
