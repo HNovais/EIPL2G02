@@ -20,6 +20,11 @@ int main()
     assert (fgets(line, 10240, stdin) != NULL);
     assert (line[strlen(line) -1] == '\n');
 
+    STACK *stack = novaStack();
+    iniciarStack(stack);
+
+    STACK *stackPointer[100];
+
     int flagMain = 0;
 
     for (unsigned int i=0; i < strlen(line)-1; i++)
@@ -35,6 +40,6 @@ int main()
         }
     }
 
-    parser(line);
+    parser(line, stack, stackPointer);
     return 0;
 }

@@ -24,17 +24,13 @@ STACK *novaStack() {
  *
  * @param line : A linha que foi lida e da qual se vai fazer o parser.
  */
-void parser(char *line)
+void parser(char *line, STACK *stack, STACK *stackPointer[])
 {
     int flag = 0;
     int bloco = 0;
-    STACK *stack = novaStack();
-    iniciarStack(stack);
+    stackPointer[0] = stack;
     STACK *addressBloco = novaStack();
     STACK *choose;
-
-    STACK *stackPointer[100];
-    stackPointer[0] = stack;
 
     DADOS variaveis [26];
     atribuicao(variaveis);

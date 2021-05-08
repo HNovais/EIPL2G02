@@ -39,13 +39,14 @@ typedef struct stack{
     int size;      /**< Variável que guarda o tamanho da stack */
 } STACK;
 
-void parser(char *line);
-void parserArrBlo(char *token, STACK *stackPointer[], int *flag, int *bloco, STACK *adressBloco);
+void parser(char *line, STACK *stack, STACK *stackPointer[]);
+STACK *novaStack();
+void parserArrBlo(char *token, STACK *stackPointer[], int *flag, int *bloco, STACK *addressBloco);
 void criarArray(STACK *stackPointer[],  int *flag);
 void iniciarStack(STACK *stack);
-void criarBloco(STACK *stackPointer[],  int *flag, STACK *adressBloco);
-void blocoOperations(char *token, STACK *stackPointer[], int *flag, int *bloco, STACK *adressBloco);
-void decideOperations(char *token, STACK *stackPointer[], int *flag, int *bloco, STACK *adressBloco);
+void criarBloco(STACK *stackPointer[],  int *flag, STACK *addressBloco);
+void blocoOperations(char *token, STACK *stackPointer[], int *flag, int *bloco, STACK *addressBloco);
+void decideOperations(char *token, STACK *stackPointer[], int *flag, int *bloco, STACK *addressBloco);
 int parserOperations(char *token, STACK *stackPointer[], int *flag);
 void arrayOperations(char *token, STACK *stackPointer[], int *flag);
 void criarString(char *token, STACK *stackPointer[], int *flag);
