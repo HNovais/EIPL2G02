@@ -522,7 +522,7 @@ int exponenciacao(STACK *stack)
  */
 int searchSubstring(STACK *stack)
 {
-    int r;
+    int r = 0;
     int x = somaTiposTop(stack);
 
     DADOS P = POP(stack);
@@ -1407,4 +1407,514 @@ int divideString(STACK *stackPointer[], int *flag)
 
     return r;
 
+}
+
+/**
+ * \brief Esta é a função auxiliar da arrayOperations que redireciona para as operações nos Arrays
+ *
+ * @param token : Símbolo da operação
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+*/
+void aritArrayOperations (char *token, STACK *stackPointer[], int *flag)
+{
+    if (strcmp(token,"~") == 0) arrayToStack    (stackPointer[*flag], stackPointer[*flag+1]);
+    if (strcmp(token,"=") == 0) indexArray      (stackPointer[*flag], stackPointer[*flag+1]);
+    if (strcmp(token,",") == 0) range           (stackPointer, flag);
+    if (strcmp(token,"*") == 0) replicate       (stackPointer, flag);
+}
+
+/**
+ * \brief Esta é a função auxiliar da arrayOperations que redireciona para operações com os elementos do Array
+ *
+ * @param token : Símbolo da operação
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+*/
+void elemArrayOperations (char *token, STACK *stackPointer[], int *flag)
+{
+    if (strcmp(token,"(") == 0) removeFirst     (stackPointer, flag);
+    if (strcmp(token,")") == 0) removeLast      (stackPointer, flag);
+    if (strcmp(token,"<") == 0) firstElements   (stackPointer, flag);
+    if (strcmp(token,">") == 0) lastElements    (stackPointer, flag);
+}
+
+
+/**
+ * \brief Esta é a função auxiliar da aritArrayOperations que coloca na stack todos os elementos do array
+ *
+ * @param stack : stack
+ * @param array : local onde está o array
+ */
+void arrayToStack(STACK *stack, STACK *array)
+{
+    int i;
+    int x = array->count;
+
+    DADOS P[x];
+
+    x = sizeof(P)/sizeof(P[0]);
+
+    for (i = 0; i < x; i++)
+    {
+        P[i] = POP(array);
+    }
+
+    stack->count--;
+
+    for (i = 0; i < x; i++)
+    {
+        PUSH(stack, P[x-i-1]);
+    }
+}
+
+/**
+ * \brief Esta é a função auxiliar da aritArrayOperations que dá o tamanho do array
+ *
+ * @param stack : stack
+ * @param array : local onde está o array
+ */
+void size(STACK *stack, STACK *array)
+{
+    POP(stack);
+    PUSHL(stack, array->count);
+}
+
+/**
+ * \brief Esta é a função auxiliar da aritArrayOperations que vai buscar o valor por índice
+ *
+ * @param stack : stack
+ * @param array : local onde está o array
+ */
+void indexArray(STACK *stack, STACK *array)
+{
+    DADOS Z = POP(stack);
+    POP(stack);
+
+    for (int i = array->count-1; i >= 0; i--)
+    {
+        if (i == Z.data.vl) PUSH(stack, array->comp[i]);
+    }
+}
+
+/**
+ * \brief Esta é a função auxiliar da aritArrayOperations que cria um array com x número de elementos
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
+void range (STACK *stackPointer[], int *flag)
+{
+    DADOS P = POP(stackPointer[*flag]);
+
+    if (P.tipo == LONG)
+    {
+        criarArray(stackPointer, flag);
+
+        for (long i=0; i < P.data.vl; i++)
+        {
+            PUSHL(stackPointer[*flag], i);
+        }
+        (*flag)--;
+    }
+    else
+    {
+        PUSHL(stackPointer[*flag], stackPointer[*flag+1]->count);
+    }
+}
+
+/**
+ * \brief Esta é a função auxiliar da aritArrayOperations que repete um array
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
+void replicate (STACK *stackPointer[], int *flag)
+{
+    DADOS P = POP(stackPointer[*flag]);
+    STACK *array = stackPointer[*flag+1];
+    int x = array->count;
+    int i;
+
+    for (i=0; i < (P.data.vl-1)*x; i++)
+    {
+        PUSH(array, array->comp[i]);
+    }
+}
+
+/**
+ * \brief Esta é a função auxiliar da elemArrayOperations que remove o primeiro elemento e o coloca na stack
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
+void removeFirst (STACK *stackPointer[], int *flag)
+{
+    DADOS P = POP(stackPointer[*flag]);
+    STACK *aux = P.data.va;
+    DADOS Z = aux->comp[0];
+
+    int x = aux->count;
+
+    for (int i=0; i < x; i++)
+    {
+        aux->comp[i] = aux->comp[i+1];
+    }
+
+    aux->count--;
+    PUSHA(stackPointer[*flag], aux);
+    PUSH(stackPointer[*flag], Z);
+}
+
+/**
+ * \brief Esta é a função auxiliar da elemArrayOperations que remove o último elemento e o coloca na stack
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
+void removeLast (STACK *stackPointer[], int *flag)
+{
+    DADOS P = POP(stackPointer[*flag]);
+    STACK *aux = P.data.va;
+    DADOS Z = POP(P.data.va);
+
+
+    PUSHA(stackPointer[*flag], aux);
+    PUSH(stackPointer[*flag], Z);
+}
+
+/**
+ * \brief Esta é a função auxiliar da elemArrayOperations que vai buscar x valores do ínicio de um array
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
+void firstElements(STACK *stackPointer[], int *flag)
+{
+    DADOS P = POP(stackPointer[*flag]);
+    STACK *array = stackPointer[*flag+1];
+
+    unsigned int i;
+
+    for (i = array->count; i > P.data.vl ; i--)
+    {
+        POP(array);
+    }
+}
+
+/**
+ * \brief Esta é a função auxiliar da elemArrayOperations que vai buscar x valores do fim de um array
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
+void lastElements(STACK *stackPointer[], int *flag)
+{
+    DADOS P = POP(stackPointer[*flag]);
+    STACK *array = stackPointer[*flag+1];
+    int x = array->count;
+    int i;
+
+    for (i=0; i < P.data.vl; i++)
+    {
+        array->comp[i] = array->comp[x-P.data.vl+i];
+    }
+
+    for (i=0; i < x-P.data.vl; i++)
+    {
+        POP(array);
+    }
+}
+
+/**
+ * \brief Esta é a função auxiliar da aritArrayOperations que concatena arrays e/ou outros elementos
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
+void concatenarArrays(STACK *stackPointer[], int *flag)
+{
+    DADOS P = TOP(stackPointer[*flag]);
+
+    if (P.tipo == ARRAY) concatenaResto(stackPointer, flag);
+    else concatenaArrNum(stackPointer, flag);
+
+}
+
+/**
+ * \brief Esta é a função auxiliar da concatenarArrays que concatena um array e um número, por esta ordem
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
+void concatenaArrNum(STACK *stackPointer[], int *flag)
+{
+    DADOS P = POP(stackPointer[*flag]);
+
+    PUSH(stackPointer[*flag+1], P);
+}
+
+/**
+ * \brief Esta é a função auxiliar da concatenarArrays que concatena dois arrays ou um número e um array
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
+void concatenaResto(STACK *stackPointer[], int *flag)
+{
+    int x = somaTiposTop(stackPointer[*flag]);
+    DADOS P = POP(stackPointer[*flag]);
+    DADOS Z = POP(stackPointer[*flag]);
+    STACK *arrayP = P.data.va;
+
+    if (x == 17 || x == 18) concatenaNumArr(arrayP, stackPointer, flag, Z);
+    else concatenaArrArr(arrayP, stackPointer, flag, Z);
+}
+
+/**
+ * \brief Esta é a função auxiliar da concatenarArrays que concatena um número e um array, por esta ordem
+ *
+ * @param stackPointerarr : array de apontadores para a stack ou arrays criados
+ * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ * @param array : array retirado da stack
+ * @param P : local onde está guardado o array
+ */
+void concatenaNumArr (STACK *array, STACK *stackPointer[], int *flag, DADOS P)
+{
+    criarArray(stackPointer, flag);
+    (*flag)--;
+
+    PUSH(stackPointer[*flag+1], P);
+
+    for (int i=0; i<array->count; i++)
+    {
+        PUSH(stackPointer[*flag+1], array->comp[i]);
+    }
+}
+
+/**
+ * \brief Esta é a função auxiliar da concatenarArrays que concatena dois arrays
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag: indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ * @param array : array retirado da stack
+ * @param P : local onde está guardado um dos arraya
+ */
+void concatenaArrArr (STACK *array, STACK *stackPointer[], int *flag, DADOS P)
+{
+    criarArray(stackPointer, flag);
+    (*flag)--;
+
+    STACK *arrayP = P.data.va;
+
+    for (int i=0; i < arrayP->count; i++)
+    {
+        PUSH(stackPointer[*flag+1], arrayP->comp[i]);
+    }
+    for (int i=0; i<array->count; i++)
+    {
+        PUSH(stackPointer[*flag+1], array->comp[i]);
+    }
+}
+
+/**
+ * \brief Esta é a função auxiliar da parserBloco que executa um bloco
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ * @param bloco : indicador de que possuímos um bloco (abertura de {)
+ * @param addressBloco : stack onde vai ser guardado o bloco
+ */
+void executaBloco(STACK *stackPointer[], int *flag, int *bloco, STACK *addressBloco)
+{
+    int x = addressBloco->count;
+    DADOS block = POP(stackPointer[*flag]);
+    STACK *bl = block.data.vb;
+
+    for (int i = 0; i < x; i++)
+    {
+
+        if (bl->comp[i].tipo == LONG) PUSH(stackPointer[*flag], bl->comp[i]);
+        else {
+            DADOS P = bl->comp[i];
+            decideOperations(P.data.vs, stackPointer, flag, bloco, addressBloco);
+        }
+    }
+}
+
+/**
+ * \brief Esta é a função auxiliar da parserBloco que aplica o bloco a todos os elementos de um array
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ * @param addressBloco : stack onde vai ser guardado o bloco
+ */
+void aplicaBloco(STACK *stackPointer[], int *flag, STACK *addressBloco)
+{
+    int x = addressBloco->count;
+    int k, a = -1;
+
+    DADOS block = POP(stackPointer[*flag]);
+    STACK *bl = block.data.vb;
+    DADOS n;
+    for (int i = 0; i < x; i++) {
+        if (bl->comp[i].tipo == LONG) {
+            n = bl->comp[i];
+            a = 0;
+        } else {
+            DADOS array = POP(stackPointer[*flag]);
+            STACK *arr = array.data.va;
+            k = arr->count;
+            criarArray(stackPointer, flag);
+            for (int j = 0; j < k; j++) {
+                PUSH(stackPointer[*flag], arr->comp[j]);
+                if (a == 0) PUSH(stackPointer[*flag], n);
+                if ((bl->comp[i].data.vc) == ' ') PUSHC(stackPointer[*flag],' ');
+                else if ((bl->comp[i].data.vc) == '\n') PUSHC(stackPointer[*flag],'\n');
+                else parserOperations(bl->comp[i].data.vs, stackPointer, flag);
+            }
+            (*flag)--;
+            a = -1;
+        }
+    }
+
+}
+
+/**
+ * \brief Esta é a função auxiliar da parserBloco que faz o fold sobre um array ou string usando o bloco
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
+void foldBloco(STACK *stackPointer[], int *flag)
+{
+    DADOS block = POP(stackPointer[*flag]);
+    STACK *bl = block.data.vb;
+
+    DADOS array = POP(stackPointer[*flag]);
+    STACK *arr = array.data.va;
+    int k = arr->count;
+
+    char *operador = bl->comp[0].data.vs;
+
+    for (int i = 0; i < k; i++)
+    {
+        if (i == 0)
+        {
+            PUSH(stackPointer[*flag], arr->comp[i]);
+            PUSH(stackPointer[*flag], arr->comp[++i]);
+            parserOperations(operador, stackPointer, flag);
+        } else
+        {
+            PUSH(stackPointer[*flag], arr->comp[i]);
+            parserOperations(operador, stackPointer, flag);
+        }
+    }
+}
+
+/**
+ * \brief Esta é a função auxiliar da parserBloco que filtra o bloco
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
+void filtraBloco(STACK *stackPointer[], int *flag)
+{
+    DADOS block = POP(stackPointer[*flag]);
+    STACK *bl = block.data.vb;
+    DADOS array = POP(stackPointer[*flag]);
+    STACK *a = array.data.va;
+    int x = a->count;
+    int k = 1;
+
+    if ((bl->count > 2) && (strstr("!",bl->comp[2].data.vs) != NULL)) k = 0;
+
+    criarArray(stackPointer, flag);
+    (*flag)--;
+
+    for (int i = 0; i < x; i++)
+    {
+        if ((a->comp[i].data.vl % bl->comp[0].data.vl) == k) PUSH(stackPointer[*flag+1], a->comp[i]);
+    }
+
+    free(bl);
+    free(a);
+}
+
+/**
+ * \brief Esta é a função auxiliar da parserBloco ordena usando o bloco
+ *
+ * @param stackPointer : array de apontadores para a stack ou arrays criados
+ * @param flag : indicador de que possuímos um array e da sua posição na stackPointer (abertura de [)
+ */
+void ordenaBloco(STACK *stackPointer[], int *flag)
+{
+    STACK *array = stackPointer[(*flag)+1];
+    DADOS strings [100];
+    long tamanho [100];
+    int x = array->count;
+
+    for (int i = 0; i < x; i++)
+    {
+        strings [i] = TOP(array);
+        stringSize(array);
+        tamanho[i] = POPL(array);
+    }
+    POP(stackPointer[(*flag)]);
+
+    selSort(tamanho, x, strings);
+
+    for(int j = 0; j < x; j++)
+    {
+        PUSH(array, strings[j]);
+    }
+}
+
+/**
+ * \brief Esta é a função auxiliar de ordenação da ordenaBloco
+ *
+ * @param v : array a ser ordenado
+ * @param n : tamanho dos arrays
+ * @param s : array a ser ordenado
+ */
+void selSort (long v[], int n, DADOS s[]) 
+{
+
+	int i, j;
+
+	for (j=0; j<n-1; j++)
+		for (i=j+1; i<n; i++)
+			if (v[i] < v[j]) 
+            {
+                swapL(v, i, j);
+                swapD(s, i, j);
+            }
+}
+
+/**
+ * \brief Esta é a função auxiliar da selSort que troca dois elementos entre si
+ *
+ * @param v : array a ser ordenado
+ * @param i : indice do elemento a ser trocado
+ * @param j : indice do elemento a ser trocado
+ */
+void swapL (long v[], int i, int j) 
+{
+	long t = v[i];
+	v[i] = v[j];
+	v[j] = t;
+}
+
+/**
+ * \brief Esta é a função auxiliar da selSort que troca dois elementos entre si
+ *
+ * @param v : array a ser ordenado
+ * @param i : indice do elemento a ser trocado
+ * @param j : indice do elemento a ser trocado
+ */
+void swapD (DADOS v[], int i, int j) 
+{
+	DADOS t = v[i];
+	v[i] = v[j];
+	v[j] = t;
 }

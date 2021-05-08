@@ -35,13 +35,12 @@ void parser(char *line)
 
     STACK *stackPointer[100];
     stackPointer[0] = stack;
-    char *delims = " \t\n";
 
     DADOS variaveis [26];
     atribuicao(variaveis);
 
 
-    for (char *token = strtok(line, delims); token != NULL; token = strtok(NULL, delims))
+    for (char *token = strtok(line, " \t\n"); token != NULL; token = strtok(NULL, " \t\n"))
     {
         char *sobra;
 
@@ -77,7 +76,7 @@ void parser(char *line)
 
     PRINT_STACK(stack);
     putchar('\n');
-}
+ }
 
 
 /**
@@ -152,6 +151,7 @@ void blocoOperations (char *token, STACK *stackPointer[], int *flag, int *bloco,
     if (strstr("%",token) != NULL) aplicaBloco(stackPointer, flag, addressBloco);
     if (strstr("*",token) != NULL) foldBloco(stackPointer, flag);
     if (strstr(",",token) != NULL) filtraBloco(stackPointer, flag);
+    if (strstr("$",token) != NULL) ordenaBloco(stackPointer, flag);
 }
 
 /**

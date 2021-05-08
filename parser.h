@@ -141,6 +141,10 @@ void executaBloco(STACK *stackPointer[], int *flag, int *bloco, STACK *adressBlo
 void aplicaBloco(STACK *stackPointer[], int *flag, STACK *addressBloco);
 void foldBloco(STACK *stackPointer[], int *flag);
 void filtraBloco(STACK *stackPointer[], int *flag);
+void ordenaBloco(STACK *stackPointer[], int *flag);
+void selSort (long v[], int n, DADOS s[]);
+void swapL (long v[], int i, int j);
+void swapD (DADOS v[], int i, int j);
 void spaces(STACK *stackPointer[], int *flag);
 void newline(STACK *stackPointer[], int *flag);
 int divideString(STACK *stackPointer[], int *flag);
