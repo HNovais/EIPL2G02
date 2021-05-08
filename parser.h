@@ -40,7 +40,7 @@ typedef struct stack{
 } STACK;
 
 void parser(char *line);
-void parserAux(char *token, STACK *stackPointer[], int *flag, int *bloco, STACK *adressBloco);
+void parserArrBlo(char *token, STACK *stackPointer[], int *flag, int *bloco, STACK *adressBloco);
 void criarArray(STACK *stackPointer[],  int *flag);
 void iniciarStack(STACK *stack);
 void criarBloco(STACK *stackPointer[],  int *flag, STACK *adressBloco);
@@ -142,7 +142,6 @@ void aplicaBloco(STACK *stackPointer[], int *flag, STACK *addressBloco);
 void foldBloco(STACK *stackPointer[], int *flag);
 void filtraBloco(STACK *stackPointer[], int *flag);
 void spaces(STACK *stackPointer[], int *flag);
-void stringArray(STACK *stackPointer[], int *flag);
 void newline(STACK *stackPointer[], int *flag);
 int divideString(STACK *stackPointer[], int *flag);
 

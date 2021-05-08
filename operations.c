@@ -402,13 +402,14 @@ int incrementar (STACK *stack)
 {
     int r = 0;
 
-    DADOS P = POP(stack);
+    DADOS P = TOP(stack);
 
-    if(P.tipo == DOUBLE) {PUSHD(stack, (P.data.vd+1)); r = 1;}
-    if(P.tipo == CHAR) {PUSHC(stack, (P.data.vc+1)); r = 1;}
-    if(P.tipo == LONG) {PUSHL(stack, (P.data.vl+1)); r = 1;}
+    if(P.tipo == DOUBLE) {P = POP(stack);PUSHD(stack, (P.data.vd+1)); r = 1;}
+    if(P.tipo == CHAR) {P = POP(stack); PUSHC(stack, (P.data.vc+1)); r = 1;}
+    if(P.tipo == LONG) {P = POP(stack);PUSHL(stack, (P.data.vl+1)); r = 1;}
     if(P.tipo == STRING)
     {
+        P = POP(stack);
         unsigned long t = strlen(P.data.vs);
         char x = P.data.vs[t-1];
         P.data.vs[t-1] = '\0';
@@ -432,12 +433,13 @@ int decrementar (STACK *stack)
 {
     int r = 0;
 
-    DADOS P = POP(stack);
-    if(P.tipo == DOUBLE) {PUSHD(stack, (P.data.vd-1)); r = 1;}
-    if(P.tipo == CHAR) {PUSHC(stack, (P.data.vc-1)); r = 1;}
-    if(P.tipo == LONG) {PUSHL(stack, (P.data.vl-1)); r = 1;}
+    DADOS P = TOP(stack);
+    if(P.tipo == DOUBLE) {P = POP(stack); PUSHD(stack, (P.data.vd-1)); r = 1;}
+    if(P.tipo == CHAR) {P = POP(stack); PUSHC(stack, (P.data.vc-1)); r = 1;}
+    if(P.tipo == LONG) {P = POP(stack); PUSHL(stack, (P.data.vl-1)); r = 1;}
     if(P.tipo == STRING)
     {
+        P = POP(stack);
         char x = P.data.vs[0];
         unsigned long t = strlen(P.data.vs);
         for (unsigned int i=0; i < strlen(P.data.vs); i++)

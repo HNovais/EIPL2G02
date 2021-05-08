@@ -87,16 +87,12 @@ void size(STACK *stack, STACK *array)
 void indexArray(STACK *stack, STACK *array)
 {
     DADOS Z = POP(stack);
-    int i;
-    DADOS P;
-
-    for (i=array->count; i > Z.data.vl; i--)
-    {
-        P = POP(array);
-    }
-
     POP(stack);
-    PUSH(stack, P);
+
+    for (int i = array->count-1; i >= 0; i--)
+    {
+        if (i == Z.data.vl) PUSH(stack, array->comp[i]);
+    }
 }
 
 /**
@@ -152,18 +148,20 @@ void replicate (STACK *stackPointer[], int *flag)
  */
 void removeFirst (STACK *stackPointer[], int *flag)
 {
-    STACK *array = stackPointer[*flag+1];
-    DADOS P = array->comp[0];
-    int x = array->count;
+    DADOS P = POP(stackPointer[*flag]);
+    STACK *aux = P.data.va;
+    DADOS Z = aux->comp[0];
+
+    int x = aux->count;
 
     for (int i=0; i < x; i++)
     {
-        array->comp[i] = array->comp[i+1];
+        aux->comp[i] = aux->comp[i+1];
     }
 
-    array->count--;
-    PUSHA(stackPointer[0], array);
-    PUSH(stackPointer[0], P);
+    aux->count--;
+    PUSHA(stackPointer[*flag], aux);
+    PUSH(stackPointer[*flag], Z);
 }
 
 /**
@@ -174,12 +172,13 @@ void removeFirst (STACK *stackPointer[], int *flag)
  */
 void removeLast (STACK *stackPointer[], int *flag)
 {
-    STACK *array = stackPointer[*flag+1];
-    DADOS P = POP(array);
+    DADOS P = POP(stackPointer[*flag]);
+    STACK *aux = P.data.va;
+    DADOS Z = POP(P.data.va);
 
 
-    PUSHA(stackPointer[0], array);
-    PUSH(stackPointer[0], P);
+    PUSHA(stackPointer[*flag], aux);
+    PUSH(stackPointer[*flag], Z);
 }
 
 /**
@@ -197,7 +196,7 @@ void firstElements(STACK *stackPointer[], int *flag)
 
     for (i = array->count; i > P.data.vl ; i--)
     {
-       POP(array);
+        POP(array);
     }
 }
 

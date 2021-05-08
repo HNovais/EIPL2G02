@@ -31,23 +31,22 @@ void parser(char *line)
     STACK *stack = novaStack();
     iniciarStack(stack);
     STACK *addressBloco = novaStack();
+    STACK *choose;
+
+    STACK *stackPointer[100];
+    stackPointer[0] = stack;
     char *delims = " \t\n";
 
     DADOS variaveis [26];
     atribuicao(variaveis);
-
-    STACK *stackPointer[100];
-    stackPointer[0] = stack;
 
 
     for (char *token = strtok(line, delims); token != NULL; token = strtok(NULL, delims))
     {
         char *sobra;
 
-        STACK *choose;
         if (bloco == 1) choose = addressBloco;
         else choose = stackPointer[flag];
-
 
         long val_i = strtol(token, &sobra, 10);
         if (strlen(sobra) == 0)
@@ -64,7 +63,7 @@ void parser(char *line)
             else
             {
                 ((choose->comp[choose->count-1].tipo == BLOCO)&&(strstr("~%,$|w*", token)  != NULL)) ? blocoOperations(token, stackPointer, &flag, &bloco, addressBloco):
-                (strstr("[]{}", token)                                                     != NULL)  ? parserAux(token, stackPointer, &flag, &bloco, addressBloco):
+                (strstr("[]{}", token)                                                     != NULL)  ? parserArrBlo(token, stackPointer, &flag, &bloco, addressBloco):
                 (strstr("+-*/()%#&|^~e&e|_;\\@$clifts<>=!?e<e>,", token)                   != NULL)  ? decideOperations(token, stackPointer, &flag, &bloco, addressBloco):
                 (strchr(token,34)                                                               != NULL)  ? criarString(token, stackPointer, &flag):
                 (strcmp(token, "S/")                                                               == 0)     ? stringOperations(token, stackPointer, &flag):
@@ -90,7 +89,7 @@ void parser(char *line)
  * @param bloco : indicador de que possuímos um bloco (abertura de {)
  * @param addressBloco : stack onde vai ser guardado o bloco
  */
-void parserAux(char *token, STACK *stackPointer[], int *flag, int *bloco, STACK *addressBloco)
+void parserArrBlo(char *token, STACK *stackPointer[], int *flag, int *bloco, STACK *addressBloco)
 {
     if (strstr("[",token) != NULL) criarArray(stackPointer, flag);
     if (strstr("]",token) != NULL) (*flag)--;
