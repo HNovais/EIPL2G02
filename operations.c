@@ -246,7 +246,7 @@ int concatenaCharString(STACK *stack)
         free(s);
         r=1;
     }
-    else // char string
+    else
     {
         char *s = malloc (2*sizeof(char));
         s[0] = Z.data.vc;

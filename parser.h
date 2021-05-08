@@ -144,4 +144,3 @@ void filtraBloco(STACK *stackPointer[], int *flag);
 void spaces(STACK *stackPointer[], int *flag);
 void newline(STACK *stackPointer[], int *flag);
 int divideString(STACK *stackPointer[], int *flag);
-
